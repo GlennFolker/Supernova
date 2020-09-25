@@ -3,8 +3,10 @@
 class Command extends globalThis.Content{
 	#execute;
 	
-	subCommands = [];
-	requirements = msg => true;
+	params = [];
+	
+	description = null;
+	adminOnly = false;
 	
 	constructor(name, execute){
 		super(name);
@@ -18,6 +20,17 @@ class Command extends globalThis.Content{
 	
 	exec(msg, param){
 		this.#execute(msg, param, globalThis.Supernova.client);
+	};
+	
+	class CommandParam{
+		#base;
+		
+		#optional = false;
+		
+		constructor(base, optional){
+			this.#base = base;
+			this.#optional = optional;
+		};
 	};
 };
 

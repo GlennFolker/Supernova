@@ -18,7 +18,11 @@ class MessageHandler{
 				});
 				
 				if(toExec != null){
-					toExec.exec(msg, args);
+					if(toExec.adminOnly && !msg.member.hasPermission("ADMINISTRATOR")){
+						msg.reply("who are you again, peasant?");
+					}else{
+						toExec.exec(msg, args);
+					};
 				};
 			};
 		});
