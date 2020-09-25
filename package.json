@@ -12,7 +12,7 @@
 		"url": "git+https://github.com/GlennFolker/Supernova.git"
 	},
 	"author": "GlennFolker",
-	"license": "ISC",
+	"license": "MIT License",
 	"bugs": {
 		"url": "https://github.com/GlennFolker/Supernova/issues"
 	},
