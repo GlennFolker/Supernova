@@ -3,6 +3,9 @@
 class Command extends globalThis.Content{
 	#execute;
 	
+	subCommands = [];
+	requirements = msg => true;
+	
 	constructor(name, execute){
 		super(name);
 		
