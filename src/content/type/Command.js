@@ -22,14 +22,21 @@ class Command extends globalThis.Content{
 		this.#execute(msg, param, globalThis.Supernova.client);
 	};
 	
-	class CommandParam{
-		#base;
-		
+	static CommandParam = class CommandParam{
+		#name;
 		#optional = false;
 		
-		constructor(base, optional){
-			this.#base = base;
+		constructor(name, optional){
+			this.#name = name;
 			this.#optional = optional;
+		};
+		
+		getName(){
+			return this.#name;
+		};
+		
+		isOptional(){
+			return this.#optional;
 		};
 	};
 };
