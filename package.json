@@ -1,0 +1,23 @@
+{
+	"name": "supernova",
+	"version": "1.0.0",
+	"description": "\"I'm one of The Council. I shall do what I must against heretics.\"",
+	"main": "./src/Supernova.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"start": "node ."
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/GlennFolker/Supernova.git"
+	},
+	"author": "GlennFolker",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/GlennFolker/Supernova/issues"
+	},
+	"homepage": "https://github.com/GlennFolker/Supernova#readme",
+	"dependencies": {
+		"discord.js": "^12.3.1"
+	}
+}
