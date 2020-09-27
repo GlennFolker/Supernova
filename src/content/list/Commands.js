@@ -5,6 +5,7 @@ const fs = require("fs");
 class Commands{
 	static help;
 	static setup;
+	static say;
 	
 	constructor(){};
 	
@@ -91,6 +92,28 @@ class Commands{
 			"mod-channel-id"
 		]);
 		this.setup.params[1] = new globalThis.Command.CommandParam("value", true, []);
+		
+		this.say = new globalThis.Command("say", (msg, param, client) => {
+			param = param.join(" ").split("[]#");
+			
+			let result = "";
+			
+			for(let i = 0; i < param.length; i++){
+				if(i % 2 == 1){
+					let emoji = msg.guild.emojis.cache.find(e => e.name == param[i]);
+					
+					result += emoji;
+				}else{
+					result += param[i];
+				};
+			};
+			
+			msg.delete();
+			msg.channel.send(result);
+		});
+		this.say.adminOnly = true;
+		this.say.description = "I will say the exact same thing.";
+		this.say.params[0] = new globalThis.Command.CommandParam("phrase", false, []);
 	};
 };
 
