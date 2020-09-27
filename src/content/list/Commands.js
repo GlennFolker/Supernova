@@ -1,7 +1,10 @@
 "use strict";
 
+const fs = require("fs");
+
 class Commands{
 	static help;
+	static setup;
 	
 	constructor(){};
 	
@@ -13,6 +16,8 @@ class Commands{
 				let result = "";
 				
 				commands.forEach(command => {
+					if(command.adminOnly && !msg.member.hasPermission("ADMINISTRATOR")) return;
+					
 					result += "_";
 					
 					result += globalThis.Config.prefix + "**" + command.getName() + "**";
@@ -28,6 +33,8 @@ class Commands{
 					if(command.description != null){
 						result += " - " + command.description;
 					};
+					
+					result += "\n"
 				});
 				
 				let embed = new globalThis.Supernova.discord.MessageEmbed();
@@ -45,7 +52,11 @@ class Commands{
 					if(command.getName() == param) selectedCmd = command;
 				});
 				
-				if(selectedCmd != null){
+				if(selectedCmd != null && (!selectedCmd.adminOnly || msg.member.hasPermission("ADMINISTRATOR"))){
+					if(selectedCmd.description != null){
+						result += selectedCmd.description + " \n";
+					};
+					
 					result += "Usage: \n_"
 					
 					result += globalThis.Config.prefix + "**" + selectedCmd.getName() + "**";
@@ -58,22 +69,28 @@ class Commands{
 					
 					result += "_";
 					
-					if(selectedCmd.description != null){
-						result += " - " + selectedCmd.description;
-					};
-					
 					let embed = new globalThis.Supernova.discord.MessageEmbed();
 					embed.addField(globalThis.Config.prefix + param, result, true);
 					embed.setColor("00BBFF");
 					
 					msg.channel.send(embed);
 				}else{
-					msg.reply("there is no such command as " + param + ", imbecile.");
+					msg.reply("there is either no command such as " + param + " or you just don\'t have the permission to view said command, imbecile.");
 				};
 			};
 		});
 		this.help.description = "Shows this monologue or explains other commands if supplied another inputs.";
-		this.help.params[0] = new globalThis.Command.CommandParam("command", true);
+		this.help.params[0] = new globalThis.Command.CommandParam("command", true, []);
+		
+		this.setup = new globalThis.Command("setup", (msg, param, client) => {
+			
+		});
+		this.setup.adminOnly = true;
+		this.setup.description = "Configures things for this server.";
+		this.setup.params[0] = new globalThis.Command.CommandParam("type", false, [
+			"mod-channel-id"
+		]);
+		this.setup.params[1] = new globalThis.Command.CommandParam("value", true, []);
 	};
 };
 

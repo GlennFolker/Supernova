@@ -25,10 +25,12 @@ class Command extends globalThis.Content{
 	static CommandParam = class CommandParam{
 		#name;
 		#optional = false;
+		#accepted = [];
 		
-		constructor(name, optional){
+		constructor(name, optional, accepted){
 			this.#name = name;
 			this.#optional = optional;
+			this.#accepted = accepted;
 		};
 		
 		getName(){
@@ -37,6 +39,10 @@ class Command extends globalThis.Content{
 		
 		isOptional(){
 			return this.#optional;
+		};
+		
+		isAccepted(){
+			return this.#accepted;
 		};
 	};
 };

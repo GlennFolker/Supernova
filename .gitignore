@@ -1,2 +1,6 @@
-src/Config.js
 node_modules
+
+src/Config.js
+
+setup.json
+warns.json
