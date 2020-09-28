@@ -13,10 +13,11 @@ class Supernova{
 	static main(){
 		this.client.on("ready", () => {
 			globalThis.Vars.init();
-			
 			this.handler = new globalThis.MessageHandler(this.client);
 			
 			this.handler.init();
+			
+			this.client.user.setActivity(globalThis.Config.prefix + "help", {type: "LISTENING"});
 			
 			console.log(globalThis);
 		});

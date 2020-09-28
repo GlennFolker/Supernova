@@ -21,7 +21,13 @@ class MessageHandler{
 					if(toExec.adminOnly && !msg.member.hasPermission("ADMINISTRATOR")){
 						msg.reply("who are you again, peasant?");
 					}else{
-						toExec.exec(msg, args);
+						try{
+							toExec.exec(msg, args);
+						}catch(e){
+							console.error(e);
+							
+							msg.reply("error while trying to execute command \"" + toExec.getName() + "\".");
+						};
 					};
 				};
 			};

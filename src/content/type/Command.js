@@ -19,6 +19,21 @@ class Command extends globalThis.Content{
 	};
 	
 	exec(msg, param){
+		for(let i = 0; i < this.params.length; i++){
+			if(!this.params[i].isAccepted(param[i])){
+				msg.reply("the command\'s parameter index \"" + i + "\" doesn\'t accept \"" + param[i] + "\".");
+				
+				let cur = "";
+				let j = 0;
+				
+				this.params.forEach(param => {
+					
+				});
+				
+				return;
+			};
+		};
+		
 		this.#execute(msg, param, globalThis.Supernova.client);
 	};
 	
@@ -41,8 +56,16 @@ class Command extends globalThis.Content{
 			return this.#optional;
 		};
 		
-		isAccepted(){
-			return this.#accepted;
+		isAccepted(param){
+			if(this.#accepted.length < 1 || this.#optional) return true;
+			
+			let res = false;
+			
+			this.#accepted.forEach(accept => {
+				if(accept == param) res = true;
+			});
+			
+			return res;
 		};
 	};
 };
