@@ -106,8 +106,6 @@ class Commands{
 		this.setup.params[1] = new globalThis.Command.CommandParam("value", true);
 		
 		this.say = new globalThis.Command("say", (msg, param, client) => {
-			param = param.join(" ").split("[]#");
-			
 			let result = "";
 			
 			for(let i = 0; i < param.length; i++){
@@ -127,7 +125,7 @@ class Commands{
 		});
 		this.say.adminOnly = true;
 		this.say.description = "I will say the exact same thing.";
-		this.say.params[0] = new globalThis.Command.CommandParam("phrase", false);
+		this.say.params[0] = new globalThis.Command.CommandParam("...phrase", false);
 	};
 };
 
