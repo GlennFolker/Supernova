@@ -76,7 +76,7 @@ class Commands{
 					
 					msg.channel.send(embed);
 				}else{
-					msg.reply("there is either no command such as " + param + " or you just don\'t have the permission to view said command, imbecile.");
+					msg.reply("there is either no command such as \`" + param + "\` or you just don\'t have the permission to view said command, imbecile.");
 				};
 			};
 		});
@@ -87,16 +87,23 @@ class Commands{
 			let key = param[0];
 			let val = param[1];
 			
-			globalThis.Supernova.stpHandler.set(msg.guild, key, val);
-			
-			msg.reply("\"" + key + "\" in this server is now \"" + val + "\".");
+			if(typeof(val) !== "undefined"){
+				globalThis.Supernova.stpHandler.set(msg.guild, key, val);
+				
+				msg.reply("\`" + key + "\` in this server is now \`" + val + "\`.");
+			}else{
+				val = globalThis.Supernova.stpHandler.get(msg.guild, key);
+				
+				msg.reply("\`" + key + "\` in this server is currently \`" + val + "\`.");
+			};
 		});
 		this.setup.adminOnly = true;
 		this.setup.description = "Configures things for this server.";
 		this.setup.params[0] = new globalThis.Command.CommandParam("type", false, [
-			"mod-channel-id"
+			"mod-channel-id",
+			"log-channel-id"
 		]);
-		this.setup.params[1] = new globalThis.Command.CommandParam("value", false);
+		this.setup.params[1] = new globalThis.Command.CommandParam("value", true);
 		
 		this.say = new globalThis.Command("say", (msg, param, client) => {
 			param = param.join(" ").split("[]#");

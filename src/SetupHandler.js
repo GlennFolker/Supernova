@@ -3,25 +3,53 @@
 const fs = require("fs");
 
 class SetupHandler{
-	constructor(){};
+	#setup;
+	
+	constructor(){
+		this.#setup = {
+			servers: []
+		};
+	};
+	
+	init(){
+		fs.readFile("setup.json", "utf8", (e, data) => {
+			if(e){
+				console.error(e);
+			}else{
+				this.#setup = JSON.parse(data);
+			};
+		});
+	};
 	
 	set(server, key, val){
 		fs.readFile("setup.json", "utf8", (e, data) => {
 			if(e){
 				console.error(e);
 			}else{
-				data = JSON.parse(data);
+				this.#setup = JSON.parse(data);
 				
-				let config = this.findConfig(this.findSetup(server, data), key);
+				let config = this.findConfig(this.findSetup(server, this.#setup), key);
 				config.val = val;
 				
-				fs.writeFile("setup.json", JSON.stringify(data), "utf8", e => {
+				fs.writeFile("setup.json", JSON.stringify(this.#setup), "utf8", e => {
 					if(e){
 						console.error(e);
 					};
 				});
 			};
 		});
+	};
+	
+	get(server, key){
+		let config = this.findConfig(this.findSetup(server, this.#setup), key);
+		
+		fs.writeFile("setup.json", JSON.stringify(this.#setup), "utf8", e => {
+			if(e){
+				console.error(e);
+			};
+		});
+		
+		return config.val;
 	};
 	
 	findSetup(server, data){

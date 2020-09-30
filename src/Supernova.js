@@ -20,6 +20,7 @@ class Supernova{
 			this.stpHandler = new globalThis.SetupHandler();
 			
 			this.msgHandler.init();
+			this.stpHandler.init();
 			
 			this.client.user.setActivity(globalThis.Config.prefix + "help", {type: "LISTENING"});
 			
