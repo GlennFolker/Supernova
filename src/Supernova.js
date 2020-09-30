@@ -2,20 +2,24 @@
 
 require("./Config");
 require("./Vars");
+
 require("./MessageHandler");
+require("./SetupHandler");
 
 class Supernova{
 	static discord = require("discord.js");
 	static client = new this.discord.Client();
 	
-	static handler;
+	static msgHandler;
+	static stpHandler;
 	
 	static main(){
 		this.client.on("ready", () => {
 			globalThis.Vars.init();
-			this.handler = new globalThis.MessageHandler(this.client);
+			this.msgHandler = new globalThis.MessageHandler(this.client);
+			this.stpHandler = new globalThis.SetupHandler();
 			
-			this.handler.init();
+			this.msgHandler.init();
 			
 			this.client.user.setActivity(globalThis.Config.prefix + "help", {type: "LISTENING"});
 			

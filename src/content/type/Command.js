@@ -21,14 +21,30 @@ class Command extends globalThis.Content{
 	exec(msg, param){
 		for(let i = 0; i < this.params.length; i++){
 			if(!this.params[i].isAccepted(param[i])){
-				msg.reply("the command\'s parameter index \"" + i + "\" doesn\'t accept \"" + param[i] + "\".");
+				let result = "\`" + this.getName() + "\` command\'s parameter index \`" + i + "\` doesn\'t accept \`" + param[i] + "\`.";
 				
-				let cur = "";
-				let j = 0;
+				result += "\n\nReserved parameters:\n"
 				
-				this.params.forEach(param => {
+				for(let j = 0; j < this.params.length; j++){
+					let accepted = this.params[j].getAccepted();
 					
-				});
+					if(accepted.length > 0){
+						result += "\`" + j + "\`: ";
+						
+						for(let k = 0; k < accepted.length; k++){
+							result += "\`" + accepted[k] + "\`";
+							result += k < accepted.length - 1 ? ", " : "."
+						};
+						
+						result += "\n";
+					};
+				};
+				
+				let embed = new globalThis.Supernova.discord.MessageEmbed();
+				embed.addField("Invalid parameters", result);
+				embed.setColor("FF0066");
+				
+				msg.channel.send(embed);
 				
 				return;
 			};
@@ -42,7 +58,7 @@ class Command extends globalThis.Content{
 		#optional = false;
 		#accepted = [];
 		
-		constructor(name, optional, accepted){
+		constructor(name, optional, accepted = []){
 			this.#name = name;
 			this.#optional = optional;
 			this.#accepted = accepted;
@@ -66,6 +82,10 @@ class Command extends globalThis.Content{
 			});
 			
 			return res;
+		};
+		
+		getAccepted(){
+			return this.#accepted;
 		};
 	};
 };
