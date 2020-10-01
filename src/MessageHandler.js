@@ -24,11 +24,11 @@ class MessageHandler{
 						level--;
 					};
 					
-					if(level > 0){
+					if(level > 0 && insideQuote == false){
 						insideQuote = true;
 						
 						return;
-					}else{
+					}else if(level < 1 && insideQuote == true){
 						insideQuote = false;
 						
 						return;
@@ -47,6 +47,8 @@ class MessageHandler{
 				});
 				
 				args = processed;
+				
+				args.forEach(arg => console.log(arg));
 				
 				let toExec = null;
 				
