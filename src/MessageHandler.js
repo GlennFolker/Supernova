@@ -48,8 +48,6 @@ class MessageHandler{
 				
 				args = processed;
 				
-				args.forEach(arg => console.log(arg));
-				
 				let toExec = null;
 				
 				this.commands.forEach(command => {
