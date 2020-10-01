@@ -93,6 +93,7 @@ class Commands{
 					embed.setTitle("Invalid Command");
 					embed.setURL(source + "src/content/list/Commands.js");
 					embed.setDescription("There is either no command such as \`" + param + "\` or you just don\'t have the permission to view said command, imbecile.");
+					embed.setThumbnail(msg.guild.me.user.displayAvatarURL({dynamic: true}));
 					embed.setTimestamp();
 					
 					msg.channel.send(embed);

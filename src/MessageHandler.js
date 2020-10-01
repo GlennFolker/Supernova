@@ -5,6 +5,8 @@ class MessageHandler{
 	
 	constructor(client, discord){
 		client.on("message", msg => {
+			if(msg.author == msg.guild.me.user) return;
+			
 			if(msg.content.startsWith(globalThis.Config.prefix)){
 				let args = msg.content.slice(globalThis.Config.prefix.length).trim().split(/ +/);
 				let cmd = args.shift().toLowerCase();
@@ -12,14 +14,21 @@ class MessageHandler{
 				let processed = [];
 				
 				let insideQuote = false;
+				let level = 0;
 				let i = 0;
 				
 				args.forEach(arg => {
 					if(arg == "{"){
+						level++;
+					}else if(arg == "}"){
+						level--;
+					};
+					
+					if(level > 0){
 						insideQuote = true;
 						
 						return;
-					}else if(arg == "}"){
+					}else{
 						insideQuote = false;
 						
 						return;
@@ -49,16 +58,45 @@ class MessageHandler{
 				
 				if(toExec != null){
 					if(toExec.adminOnly && !msg.member.hasPermission("ADMINISTRATOR")){
-						msg.reply("who are you again, peasant?");
+						let source = "https://github.com/GlennFolker/Supernova/tree/master/";
+						
+						let embed = new discord.MessageEmbed();
+						embed.setColor("FF0066");
+						embed.setTitle("Lack of Necessary Permissions");
+						embed.setURL(source + "src/content/list/Commands.js");
+						embed.setDescription("Who are you again, peasant? Wanting me to execute \`" + toExec.getName() + "\` command?");
+						embed.setThumbnail(msg.guild.me.user.displayAvatarURL({dynamic: true}));
+						embed.setTimestamp();
+						
+						msg.channel.send(embed);
 					}else{
 						try{
 							toExec.exec(msg, args);
 						}catch(e){
 							console.error(e);
 							
-							msg.reply("error while trying to execute command \"" + toExec.getName() + "\".");
+							let embed = new discord.MessageEmbed();
+							embed.setColor("FF0066");
+							embed.setTitle("Error");
+							embed.setDescription("Error while trying to execute to execute \`" + toExec.getName() + "\` command.");
+							embed.setThumbnail(msg.guild.me.user.displayAvatarURL({dynamic: true}));
+							embed.setTimestamp();
+							
+							msg.channel.send(embed);
 						};
 					};
+				}else{
+					let source = "https://github.com/GlennFolker/Supernova/tree/master/";
+					
+					let embed = new discord.MessageEmbed();
+					embed.setColor("FF0066");
+					embed.setTitle("Invalid Command");
+					embed.setURL(source + "src/content/list/Commands.js");
+					embed.setDescription("There is either no command such as \`" + cmd + "\` or you just don\'t have the permission to view said command, imbecile.");
+					embed.setThumbnail(msg.guild.me.user.displayAvatarURL({dynamic: true}));
+					embed.setTimestamp();
+					
+					msg.channel.send(embed);
 				};
 			};
 		});
