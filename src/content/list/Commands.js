@@ -38,16 +38,15 @@ class Commands{
 					result += "\n"
 				});
 				
-				let source = "https://github.com/GlennFolker/Supernova/";
+				let source = "https://github.com/GlennFolker/Supernova/tree/master/";
 				
 				let embed = new globalThis.Supernova.discord.MessageEmbed();
 				embed.setColor("00BBFF");
 				embed.setTitle("Supernova Commands");
-				embed.setURL(source);
-				embed.setAuthor("GlennFolker", source + "icon.png", source);
+				embed.setURL(source + "src/content/list/Commands.js");
 				embed.setDescription("Shows all available commands to execute");
-				embed.setThumbnail(source + "icon.png");
-				embed.addField("Command List: ", result, true);
+				embed.setThumbnail(msg.guild.me.user.displayAvatarURL({dynamic: true}));
+				embed.addField("Command List:", result, true);
 				embed.setTimestamp();
 				
 				msg.channel.send(embed);
@@ -62,13 +61,7 @@ class Commands{
 				});
 				
 				if(selectedCmd != null && (!selectedCmd.adminOnly || msg.member.hasPermission("ADMINISTRATOR"))){
-					if(selectedCmd.description != null){
-						result += selectedCmd.description + " \n";
-					};
-					
-					result += "Usage: \n_"
-					
-					result += globalThis.Config.prefix + "**" + selectedCmd.getName() + "**";
+					result += "_" + globalThis.Config.prefix + "**" + selectedCmd.getName() + "**";
 					
 					selectedCmd.params.forEach(param => {
 						let optional = param.isOptional();
@@ -78,13 +71,31 @@ class Commands{
 					
 					result += "_";
 					
+					let source = "https://github.com/GlennFolker/Supernova/tree/master/";
+					
 					let embed = new globalThis.Supernova.discord.MessageEmbed();
-					embed.addField(globalThis.Config.prefix + param, result, true);
 					embed.setColor("00BBFF");
+					embed.setTitle("\"" + selectedCmd.getName() + "\" Command");
+					embed.setURL(source + "src/content/list/Commands.js");
+					if(selectedCmd.description != null){
+						embed.setDescription(selectedCmd.description);
+					};
+					embed.setThumbnail(msg.guild.me.user.displayAvatarURL({dynamic: true}));
+					embed.addField("Usage:", result, true);
+					embed.setTimestamp();
 					
 					msg.channel.send(embed);
 				}else{
-					msg.reply("there is either no command such as \`" + param + "\` or you just don\'t have the permission to view said command, imbecile.");
+					let source = "https://github.com/GlennFolker/Supernova/tree/master/";
+					
+					let embed = new globalThis.Supernova.discord.MessageEmbed();
+					embed.setColor("FF0066");
+					embed.setTitle("Invalid Command");
+					embed.setURL(source + "src/content/list/Commands.js");
+					embed.setDescription("There is either no command such as \`" + param + "\` or you just don\'t have the permission to view said command, imbecile.");
+					embed.setTimestamp();
+					
+					msg.channel.send(embed);
 				};
 			};
 		});

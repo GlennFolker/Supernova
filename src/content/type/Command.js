@@ -21,9 +21,9 @@ class Command extends globalThis.Content{
 	exec(msg, param){
 		for(let i = 0; i < this.params.length; i++){
 			if(!this.params[i].isAccepted(param[i])){
-				let result = "\`" + this.getName() + "\` command\'s parameter index \`" + i + "\` doesn\'t accept \`" + param[i] + "\`.";
+				let description = "\`" + this.getName() + "\` command\'s parameter index \`" + i + "\` doesn\'t accept \`" + param[i] + "\`.";
 				
-				result += "\n\nReserved parameters:\n"
+				let result = "";
 				
 				for(let j = 0; j < this.params.length; j++){
 					let accepted = this.params[j].getAccepted();
@@ -40,9 +40,15 @@ class Command extends globalThis.Content{
 					};
 				};
 				
+				let source = "https://github.com/GlennFolker/Supernova/tree/master/";
+				
 				let embed = new globalThis.Supernova.discord.MessageEmbed();
-				embed.addField("Invalid parameters", result);
 				embed.setColor("FF0066");
+				embed.setTitle("Invalid Parameters");
+				embed.setDescription(description);
+				embed.setThumbnail(msg.guild.me.user.displayAvatarURL({dynamic: true}));
+				embed.addField("Reserved Parameters:", result);
+				embed.setTimestamp();
 				
 				msg.channel.send(embed);
 				
