@@ -3,7 +3,7 @@
 class MessageHandler{
 	commands;
 	
-	constructor(client){
+	constructor(client, discord){
 		client.on("message", msg => {
 			if(msg.content.startsWith(globalThis.Config.prefix)){
 				let args = msg.content.slice(globalThis.Config.prefix.length).trim().split(/ +/);
@@ -60,6 +60,25 @@ class MessageHandler{
 						};
 					};
 				};
+			};
+		});
+		
+		client.on("messageDelete", async msg => {
+			if(!msg.guild) return;
+			
+			let fetched = await msg.guild.fetchAuditLogs({
+				limit: 1,
+				type: "MESSAGE_DELETE"
+			});
+			
+			let deletion = fetched.entries.first();
+			if(!deletion) return;
+			
+			let {executor, target} = deletion;
+			
+			if(target.id == msg.author.id){
+				let embed = new discord.MessageEmbed();
+				
 			};
 		});
 	};

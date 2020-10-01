@@ -16,7 +16,7 @@ class Supernova{
 	static main(){
 		this.client.on("ready", () => {
 			globalThis.Vars.init();
-			this.msgHandler = new globalThis.MessageHandler(this.client);
+			this.msgHandler = new globalThis.MessageHandler(this.client, this.discord);
 			this.stpHandler = new globalThis.SetupHandler();
 			
 			this.msgHandler.init();

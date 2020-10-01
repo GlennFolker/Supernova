@@ -38,9 +38,17 @@ class Commands{
 					result += "\n"
 				});
 				
+				let source = "https://github.com/GlennFolker/Supernova/";
+				
 				let embed = new globalThis.Supernova.discord.MessageEmbed();
-				embed.addField("Command List: ", result, true);
 				embed.setColor("00BBFF");
+				embed.setTitle("Supernova Commands");
+				embed.setURL(source);
+				embed.setAuthor("GlennFolker", source + "icon.png", source);
+				embed.setDescription("Shows all available commands to execute");
+				embed.setThumbnail(source + "icon.png");
+				embed.addField("Command List: ", result, true);
+				embed.setTimestamp();
 				
 				msg.channel.send(embed);
 			}else{
@@ -100,8 +108,7 @@ class Commands{
 		this.setup.adminOnly = true;
 		this.setup.description = "Configures things for this server.";
 		this.setup.params[0] = new globalThis.Command.CommandParam("type", false, [
-			"mod-channel-id",
-			"log-channel-id"
+			"mod-channel-id"
 		]);
 		this.setup.params[1] = new globalThis.Command.CommandParam("value", true);
 		
