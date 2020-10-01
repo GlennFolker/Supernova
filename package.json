@@ -4,7 +4,6 @@
 	"description": "\"I'm one of The Council. I shall do what I must against heretics.\"",
 	"main": "./src/Supernova.js",
 	"scripts": {
-		"test": "echo \"Error: no test specified\" && exit 1",
 		"start": "node ."
 	},
 	"repository": {
