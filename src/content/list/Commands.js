@@ -125,22 +125,9 @@ class Commands{
 		this.setup.params[1] = new globalThis.Command.CommandParam("value", true);
 		
 		this.say = new globalThis.Command("say", (msg, param, client) => {
-			let result = "";
-			
-			for(let i = 0; i < param.length; i++){
-				if(i % 2 == 1){
-					let emoji = msg.guild.emojis.cache.find(e => e.name == param[i]);
-					
-					result += emoji;
-				}else{
-					result += param[i];
-				};
-			};
-			
-			if(result.length > 0){
-				msg.delete();
-				msg.channel.send(result);
-			};
+			msg.delete();
+			msg.channel.send(param);
+			console.log(param);
 		});
 		this.say.adminOnly = true;
 		this.say.description = "I will say the exact same thing.";

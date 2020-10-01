@@ -30,6 +30,7 @@ class MessageHandler{
 						return;
 					}else if(level < 1 && insideQuote == true){
 						insideQuote = false;
+						i++;
 						
 						return;
 					};
@@ -40,7 +41,7 @@ class MessageHandler{
 						if(processed[i].length > 0) processed[i] += " ";
 						processed[i] += arg;
 					}else{
-						processed.push(arg);
+						processed[i] = arg;
 						
 						i++;
 					};
