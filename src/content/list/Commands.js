@@ -127,7 +127,6 @@ class Commands{
 		this.say = new globalThis.Command("say", (msg, param, client) => {
 			msg.delete();
 			msg.channel.send(param);
-			console.log(param);
 		});
 		this.say.adminOnly = true;
 		this.say.description = "I will say the exact same thing.";
