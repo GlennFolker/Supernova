@@ -123,8 +123,12 @@ class MessageHandler{
 					let messagesChannel = msg.guild.channels.cache.get(msgChannelID);
 
 					if(typeof(messagesChannel) !== "undefined"){
+						if(msg.content.length < 1) return;
+
 						let embed = new globalThis.Supernova.discord.MessageEmbed();
 						embed.setColor("FF0066");
+						embed.setTitle("Message Deletion");
+						embed.setDescription("Successfully logged deleted message");
 						embed.setAuthor(msg.author.tag, msg.author.displayAvatarURL({dynamic: true}));
 						embed.addField("Message by " + msg.author.tag + " deleted in #" + msg.channel.name, msg.content);
 						embed.setThumbnail(msg.guild.me.user.displayAvatarURL({dynamic: true}));
