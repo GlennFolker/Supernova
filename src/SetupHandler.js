@@ -31,9 +31,9 @@ class SetupHandler{
 				let config = this.findConfig(this.findSetup(server, this.#setup), key);
 				config.val = val;
 				
-				fs.writeFile("setup.json", JSON.stringify(this.#setup), "utf8", e => {
-					if(e){
-						console.error(e);
+				fs.writeFile("setup.json", JSON.stringify(this.#setup), "utf8", ex => {
+					if(ex){
+						console.error(ex);
 					};
 				});
 			};

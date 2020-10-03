@@ -23,10 +23,10 @@ class Commands{
 					
 					result += globalThis.Config.prefix + "**" + command.getName() + "**";
 					
-					command.params.forEach(param => {
-						let optional = param.isOptional();
+					command.params.forEach(p => {
+						let optional = p.isOptional();
 						
-						result += " " + (optional ? "[" : "<") + param.getName() + (optional ? "]" : ">");
+						result += " " + (optional ? "[" : "<") + p.getName() + (optional ? "]" : ">");
 					});
 					
 					result += "_";
@@ -63,10 +63,10 @@ class Commands{
 				if(selectedCmd != null && (!selectedCmd.adminOnly || msg.member.hasPermission("ADMINISTRATOR"))){
 					result += "_" + globalThis.Config.prefix + "**" + selectedCmd.getName() + "**";
 					
-					selectedCmd.params.forEach(param => {
-						let optional = param.isOptional();
+					selectedCmd.params.forEach(p => {
+						let optional = p.isOptional();
 						
-						result += " " + (optional ? "[" : "<") + param.getName() + (optional ? "]" : ">");
+						result += " " + (optional ? "[" : "<") + p.getName() + (optional ? "]" : ">");
 					});
 					
 					result += "_";
@@ -120,7 +120,8 @@ class Commands{
 		this.setup.adminOnly = true;
 		this.setup.description = "Configures things for this server.";
 		this.setup.params[0] = new globalThis.Command.CommandParam("type", false, [
-			"mod-channel-id"
+			"mod-channel-id",
+			"msg-channel-id"
 		]);
 		this.setup.params[1] = new globalThis.Command.CommandParam("value", true);
 		

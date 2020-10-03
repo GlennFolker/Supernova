@@ -1,11 +1,5 @@
 "use strict";
 
-require("./Config");
-require("./Vars");
-
-require("./MessageHandler");
-require("./SetupHandler");
-
 class Supernova{
 	static discord = require("discord.js");
 	static client = new this.discord.Client();
@@ -14,23 +8,35 @@ class Supernova{
 	static stpHandler;
 	
 	static main(){
-		this.client.on("ready", () => {
-			globalThis.Vars.init();
-			this.msgHandler = new globalThis.MessageHandler(this.client, this.discord);
-			this.stpHandler = new globalThis.SetupHandler();
-			
-			this.msgHandler.init();
-			this.stpHandler.init();
-			
-			this.client.user.setActivity(globalThis.Config.prefix + "help", {type: "LISTENING"});
-			
-			console.log(globalThis);
-		});
-		
-		this.client.login(globalThis.Config.token);
+		try{
+			require("./Config");
+			require("./Vars");
+
+			require("./SetupHandler");
+			require("./MessageHandler");
+
+			this.client.on("ready", () => {
+				globalThis.Vars.init();
+				this.stpHandler = new globalThis.SetupHandler();
+				this.msgHandler = new globalThis.MessageHandler();
+
+				this.stpHandler.init();
+				this.msgHandler.init();
+
+				this.client.user.setActivity(globalThis.Config.prefix + "help", {type: "LISTENING"});
+
+				console.log(globalThis);
+			});
+
+			this.client.login(globalThis.Config.token);
+		}catch(e){
+			console.error(e);
+
+			process.exit();
+		};
 	};
 };
 
-Supernova.main();
-
 globalThis.Supernova = Supernova;
+
+Supernova.main();

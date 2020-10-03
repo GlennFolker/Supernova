@@ -3,7 +3,7 @@
 const ContentType = {
 	command: 0,
 	
-	all(){
+	get all(){
 		return [
 			this.command
 		];

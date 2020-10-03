@@ -17,7 +17,7 @@ class ContentList{
 	};
 	
 	init(){
-		for(const type of globalThis.ContentType.all()){
+		for(const type of globalThis.ContentType.all){
 			this.#content[type] = [];
 		};
 		

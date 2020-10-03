@@ -3,8 +3,8 @@
 class MessageHandler{
 	commands;
 	
-	constructor(client, discord){
-		client.on("message", msg => {
+	constructor(){
+		globalThis.Supernova.client.on("message", msg => {
 			if(msg.author == msg.guild.me.user) return;
 			
 			if(msg.content.startsWith(globalThis.Config.prefix)){
@@ -102,26 +102,43 @@ class MessageHandler{
 			};
 		});
 		
-		client.on("messageDelete", async msg => {
-			if(!msg.guild) return;
-			
-			let fetched = await msg.guild.fetchAuditLogs({
-				limit: 1,
-				type: "MESSAGE_DELETE"
-			});
-			
-			let deletion = fetched.entries.first();
-			if(!deletion) return;
-			
-			let {executor, target} = deletion;
-			
-			if(target.id == msg.author.id){
-				let embed = new discord.MessageEmbed();
+		globalThis.Supernova.client.on("messageDelete", async msg => {
+			try{
+				if(!msg.guild) return;
 				
+				let fetched = await msg.guild.fetchAuditLogs({
+					limit: 1,
+					type: "MESSAGE_DELETE"
+				});
+				
+				let deletion = fetched.entries.first();
+				if(!deletion) return;
+				
+				let {executor, target} = deletion;
+				
+				if(target.id == msg.author.id && executor.id != msg.guild.me.user.id){
+					let msgChannelID = globalThis.Supernova.stpHandler.get(msg.guild, "msg-channel-id");
+
+					if(typeof(msgChannelID) !== "undefined"){
+						let messagesChannel = msg.guild.channels.cache.get(msgChannelID);
+
+						let embed = new discord.MessageEmbed();
+						embed.setColor("FF0066");
+						embed.setAuthor(target.tag, target.displayAvatarURL({dynamic: true}));
+						embed.addField(executor.tag + " deleted a message in #" + messagesChannel.name, msg.content);
+						embed.setThumbnail(msg.guild.me.user.displayAvatarURL({dynamic: true}));
+						embed.setTimestamp();
+						embed.setFooter("Message ID: " + msg.id, target.user.displayAvatarURL({dynamic: true}));
+
+						messagesChannel.send(embed);
+					};
+				};
+			}catch(e){
+				console.error(e);
 			};
 		});
 	};
-	
+
 	init(){
 		this.commands = globalThis.Vars.content.getBy(globalThis.ContentType.command);
 	};
