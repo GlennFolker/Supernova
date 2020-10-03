@@ -62,7 +62,7 @@ class MessageHandler{
 					if(toExec.adminOnly && !msg.member.hasPermission("ADMINISTRATOR")){
 						let source = "https://github.com/GlennFolker/Supernova/tree/master/";
 						
-						let embed = new discord.MessageEmbed();
+						let embed = new globalThis.Supernova.discord.MessageEmbed();
 						embed.setColor("FF0066");
 						embed.setTitle("Lack of Necessary Permissions");
 						embed.setURL(source + "src/content/list/Commands.js");
@@ -77,7 +77,7 @@ class MessageHandler{
 						}catch(e){
 							console.error(e);
 							
-							let embed = new discord.MessageEmbed();
+							let embed = new globalThis.Supernova.discord.MessageEmbed();
 							embed.setColor("FF0066");
 							embed.setTitle("Error");
 							embed.setDescription("Error while trying to execute to execute \`" + toExec.getName() + "\` command.");
@@ -90,7 +90,7 @@ class MessageHandler{
 				}else{
 					let source = "https://github.com/GlennFolker/Supernova/tree/master/";
 					
-					let embed = new discord.MessageEmbed();
+					let embed = new globalThis.Supernova.discord.MessageEmbed();
 					embed.setColor("FF0066");
 					embed.setTitle("Invalid Command");
 					embed.setURL(source + "src/content/list/Commands.js");
@@ -113,34 +113,24 @@ class MessageHandler{
 			};
 		});
 		
-		globalThis.Supernova.client.on("messageDelete", async msg => {
+		globalThis.Supernova.client.on("messageDelete", msg => {
 			try{
 				if(!msg.guild) return;
-				
-				let fetched = await msg.guild.fetchAuditLogs({
-					limit: 1,
-					type: "MESSAGE_DELETE"
-				});
-				
-				let deletion = fetched.entries.first();
-				if(!deletion) return;
-				
-				let {executor, target} = deletion;
-				
-				if(target.id == msg.author.id && executor.id != msg.guild.me.user.id){
-					let msgChannelID = globalThis.Supernova.stpHandler.get(msg.guild, "msg-channel-id");
 
-					if(typeof(msgChannelID) !== "undefined"){
-						let messagesChannel = msg.guild.channels.cache.get(msgChannelID);
+				let msgChannelID = globalThis.Supernova.stpHandler.get(msg.guild, "msg-channel-id");
 
-						let embed = new discord.MessageEmbed();
+				if(typeof(msgChannelID) !== "undefined"){
+					let messagesChannel = msg.guild.channels.cache.get(msgChannelID);
+
+					if(typeof(messagesChannel) !== "undefined"){
+						let embed = new globalThis.Supernova.discord.MessageEmbed();
 						embed.setColor("FF0066");
-						embed.setAuthor(target.tag, target.displayAvatarURL({dynamic: true}));
-						embed.addField(executor.tag + " deleted a message in #" + messagesChannel.name, msg.content);
+						embed.setAuthor(msg.author.tag, msg.author.displayAvatarURL({dynamic: true}));
+						embed.addField("Message by " + msg.author.tag + " deleted in #" + msg.channel.name, msg.content);
 						embed.setThumbnail(msg.guild.me.user.displayAvatarURL({dynamic: true}));
 						embed.setTimestamp();
-						embed.setFooter("Message ID: " + msg.id, target.user.displayAvatarURL({dynamic: true}));
-
+						embed.setFooter("Message ID: " + msg.id, msg.author.displayAvatarURL({dynamic: true}));
+						
 						messagesChannel.send(embed);
 					};
 				};
