@@ -1,7 +1,5 @@
 "use strict";
 
-const fs = require("fs");
-
 class Commands{
 	static help;
 	static setup;

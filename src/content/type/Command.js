@@ -8,7 +8,7 @@ class Command extends globalThis.Content{
 	description = null;
 	adminOnly = false;
 	
-	constructor(name, execute){
+	constructor(name, execute = (msg, param, client) => {}){
 		super(name);
 		
 		this.#execute = execute;
@@ -39,8 +39,6 @@ class Command extends globalThis.Content{
 						result += "\n";
 					};
 				};
-				
-				let source = "https://github.com/GlennFolker/Supernova/tree/master/";
 				
 				let embed = new globalThis.Supernova.discord.MessageEmbed();
 				embed.setColor("FF0066");

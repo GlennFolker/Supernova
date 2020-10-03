@@ -2,11 +2,12 @@
 
 class MessageHandler{
 	commands;
+	noncommands;
 	
 	constructor(){
 		globalThis.Supernova.client.on("message", msg => {
 			if(msg.author == msg.guild.me.user) return;
-			
+
 			if(msg.content.startsWith(globalThis.Config.prefix)){
 				let args = msg.content.slice(globalThis.Config.prefix.length).trim().split(/ +/);
 				let cmd = args.shift().toLowerCase();
@@ -42,13 +43,13 @@ class MessageHandler{
 						processed[i] += arg;
 					}else{
 						processed[i] = arg;
-						
+
 						i++;
 					};
 				});
 				
 				args = processed;
-				
+
 				let toExec = null;
 				
 				this.commands.forEach(command => {
@@ -99,6 +100,16 @@ class MessageHandler{
 					
 					msg.channel.send(embed);
 				};
+			}else{
+				let args = msg.content.trim().split(/ +/);
+
+				let toExec = [];
+
+				this.noncommands.forEach(noncommand => {
+					if(noncommand.accepts(msg, args)) toExec.push(noncommand);
+				});
+
+				toExec.forEach(noncommand => noncommand.exec(msg, args));
 			};
 		});
 		
@@ -141,6 +152,7 @@ class MessageHandler{
 
 	init(){
 		this.commands = globalThis.Vars.content.getBy(globalThis.ContentType.command);
+		this.noncommands = globalThis.Vars.content.getBy(globalThis.ContentType.noncommand);
 	};
 	
 	async parseMention(msg, mention, client){

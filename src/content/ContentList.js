@@ -4,8 +4,10 @@ require("./ContentType");
 
 require("./Content");
 require("./type/Command");
+require("./type/Noncommand");
 
-require("./list/Commands.js");
+require("./list/Commands");
+require("./list/Noncommands");
 
 class ContentList{
 	#content;
@@ -22,7 +24,8 @@ class ContentList{
 		};
 		
 		this.#list.push(
-			new globalThis.Commands()
+			new globalThis.Commands(),
+			new globalThis.Noncommands()
 		);
 		
 		this.#list.forEach(list => list.init());

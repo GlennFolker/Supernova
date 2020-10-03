@@ -2,10 +2,12 @@
 
 const ContentType = {
 	command: 0,
-	
+	noncommand: 1,
+
 	get all(){
 		return [
-			this.command
+			this.command,
+			this.noncommand
 		];
 	},
 	
