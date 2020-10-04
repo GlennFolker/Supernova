@@ -59,7 +59,10 @@ class MessageHandler{
 				});
 				
 				if(toExec != null){
-					if(toExec.adminOnly && !msg.member.hasPermission("ADMINISTRATOR")){
+					if(
+						toExec.adminOnly && !msg.member.hasPermission("ADMINISTRATOR") ||
+						toExec.ownerOnly && msg.author.id !== msg.guild.owner.id
+					){
 						let source = "https://github.com/GlennFolker/Supernova/tree/master/";
 						
 						let embed = new globalThis.Supernova.discord.MessageEmbed();

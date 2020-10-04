@@ -7,6 +7,7 @@ class Command extends globalThis.Content{
 	
 	description = null;
 	adminOnly = false;
+	ownerOnly = false;
 	
 	constructor(name, execute = (msg, param, client) => {}){
 		super(name);

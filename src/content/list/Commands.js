@@ -4,6 +4,7 @@ class Commands{
 	static help;
 	static setup;
 	static say;
+	static func;
 	
 	constructor(){};
 	
@@ -15,7 +16,10 @@ class Commands{
 				let result = "";
 				
 				commands.forEach(command => {
-					if(command.adminOnly && !msg.member.hasPermission("ADMINISTRATOR")) return;
+					if(
+						command.adminOnly && !msg.member.hasPermission("ADMINISTRATOR") ||
+						command.ownerOnly && msg.author.id !== msg.guild.owner.id
+					) return;
 					
 					result += "_";
 					
@@ -130,6 +134,15 @@ class Commands{
 		this.say.adminOnly = true;
 		this.say.description = "I will say the exact same thing.";
 		this.say.params[0] = new globalThis.Command.CommandParam("...phrase", false);
+
+		this.func = new globalThis.Command("func", (msg, param, client) => {
+			let func = new Function("msg", "param", "supernova", param[0]);
+
+			func(msg, param, globalThis);
+		});
+		this.func.ownerOnly = true;
+		this.func.description = "Executes a function supplied with `msg`, `param`, and `supernova`.";
+		this.func.params[0] = new globalThis.Command.CommandParam("code", false);
 	};
 };
 
