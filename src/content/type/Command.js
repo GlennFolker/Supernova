@@ -22,22 +22,21 @@ class Command extends globalThis.Content{
 	exec(msg, param){
 		for(let i = 0; i < this.params.length; i++){
 			if(!this.params[i].isAccepted(param[i])){
-				let description = "\`" + this.getName() + "\` command\'s parameter index \`" + i + "\` doesn\'t accept \`" + param[i] + "\`.";
-				
-				let result = "";
+				let description = `\`${this.getName()}\` command's parameter index \`${i}\` doesn't accept \`${param[i]}\`.`;
+
+				let result = ``;
 				
 				for(let j = 0; j < this.params.length; j++){
 					let accepted = this.params[j].getAccepted();
 					
 					if(accepted.length > 0){
-						result += "\`" + j + "\`: ";
+						result += `\`${j}\`: `;
 						
 						for(let k = 0; k < accepted.length; k++){
-							result += "\`" + accepted[k] + "\`";
-							result += k < accepted.length - 1 ? ", " : "."
+							result += `\`${accepted[k]}\`${k < accepted.length - 1 ? "," : "."}`;
 						};
 						
-						result += "\n";
+						result += `\n`;
 					};
 				};
 				

@@ -13,7 +13,7 @@ class Commands{
 			let commands = globalThis.Vars.content.getBy(globalThis.ContentType.command);
 			
 			if(param.length < 1){
-				let result = "";
+				let result = ``;
 				
 				commands.forEach(command => {
 					if(
@@ -21,23 +21,23 @@ class Commands{
 						command.ownerOnly && msg.author.id !== msg.guild.owner.id
 					) return;
 					
-					result += "_";
+					result += `_`;
 					
-					result += globalThis.Config.prefix + "**" + command.getName() + "**";
+					result += `${globalThis.Config.prefix}**${command.getName()}**`;
 					
 					command.params.forEach(p => {
 						let optional = p.isOptional();
 						
-						result += " " + (optional ? "[" : "<") + p.getName() + (optional ? "]" : ">");
+						result += ` ${optional ? "[" : "<"}${p.getName()}${optional ? "]" : ">"}`;
 					});
 					
-					result += "_";
+					result += `_`;
 					
 					if(command.description != null){
-						result += " - " + command.description;
+						result += ` - ${command.description}`;
 					};
 					
-					result += "\n"
+					result += `\n`
 				});
 				
 				let source = "https://github.com/GlennFolker/Supernova/tree/master/";
@@ -45,7 +45,7 @@ class Commands{
 				let embed = new globalThis.Supernova.discord.MessageEmbed();
 				embed.setColor("00BBFF");
 				embed.setTitle("Supernova Commands");
-				embed.setURL(source + "src/content/list/Commands.js");
+				embed.setURL(`${source}src/content/list/Commands.js`);
 				embed.setDescription("Shows all available commands to execute");
 				embed.setThumbnail(msg.guild.me.user.displayAvatarURL({dynamic: true}));
 				embed.addField("Command List:", result, true);
@@ -55,7 +55,7 @@ class Commands{
 			}else{
 				param = param.shift();
 				
-				let result = "";
+				let result = ``;
 				let selectedCmd = null;
 				
 				commands.forEach(command => {
@@ -63,22 +63,22 @@ class Commands{
 				});
 				
 				if(selectedCmd != null && (!selectedCmd.adminOnly || msg.member.hasPermission("ADMINISTRATOR"))){
-					result += "_" + globalThis.Config.prefix + "**" + selectedCmd.getName() + "**";
+					result += `_${globalThis.Config.prefix}**${selectedCmd.getName()}**`;
 					
 					selectedCmd.params.forEach(p => {
 						let optional = p.isOptional();
 						
-						result += " " + (optional ? "[" : "<") + p.getName() + (optional ? "]" : ">");
+						result += ` ${optional ? "[" : "<"}${p.getName()}${optional ? "]" : ">"}`;
 					});
 					
-					result += "_";
+					result += `_`;
 					
 					let source = "https://github.com/GlennFolker/Supernova/tree/master/";
 					
 					let embed = new globalThis.Supernova.discord.MessageEmbed();
 					embed.setColor("00BBFF");
-					embed.setTitle("\"" + selectedCmd.getName() + "\" Command");
-					embed.setURL(source + "src/content/list/Commands.js");
+					embed.setTitle(`"${selectedCmd.getName()}" Command`);
+					embed.setURL(`${source}src/content/list/Commands.js`);
 					if(selectedCmd.description != null){
 						embed.setDescription(selectedCmd.description);
 					};
@@ -93,8 +93,8 @@ class Commands{
 					let embed = new globalThis.Supernova.discord.MessageEmbed();
 					embed.setColor("FF0066");
 					embed.setTitle("Invalid Command");
-					embed.setURL(source + "src/content/list/Commands.js");
-					embed.setDescription("There is either no command such as \`" + param + "\` or you just don\'t have the permission to view said command, imbecile.");
+					embed.setURL(`${source}src/content/list/Commands.js`);
+					embed.setDescription(`There is either no command such as \`${param}\` or you just don't have the permission to view said command, imbecile.`);
 					embed.setThumbnail(msg.guild.me.user.displayAvatarURL({dynamic: true}));
 					embed.setTimestamp();
 					
@@ -112,11 +112,11 @@ class Commands{
 			if(typeof(val) !== "undefined"){
 				globalThis.Supernova.stpHandler.set(msg.guild, key, val);
 				
-				msg.reply("\`" + key + "\` in this server is now \`" + val + "\`.");
+				msg.reply(`\`${key}\` in this server is now \`${val}\`.`);
 			}else{
 				val = globalThis.Supernova.stpHandler.get(msg.guild, key);
 				
-				msg.reply("\`" + key + "\` in this server is currently \`" + val + "\`.");
+				msg.reply(`\`${key}\` in this server is currently \`${val}\`.`);
 			};
 		});
 		this.setup.adminOnly = true;
@@ -139,6 +139,7 @@ class Commands{
 			let func = new Function("msg", "param", "supernova", param[0]);
 
 			func(msg, param, globalThis);
+			msg.reply("function execution is finished.");
 		});
 		this.func.ownerOnly = true;
 		this.func.description = "Executes a function supplied with `msg`, `param`, and `supernova`.";

@@ -68,8 +68,8 @@ class MessageHandler{
 						let embed = new globalThis.Supernova.discord.MessageEmbed();
 						embed.setColor("FF0066");
 						embed.setTitle("Lack of Necessary Permissions");
-						embed.setURL(source + "src/content/list/Commands.js");
-						embed.setDescription("Who are you again, peasant? Wanting me to execute \`" + toExec.getName() + "\` command?");
+						embed.setURL(`${source}src/content/list/Commands.js`);
+						embed.setDescription(`Who are you again, peasant? Wanting me to execute \`${toExec.getName()}\` command?`);
 						embed.setThumbnail(msg.guild.me.user.displayAvatarURL({dynamic: true}));
 						embed.setTimestamp();
 						
@@ -83,7 +83,7 @@ class MessageHandler{
 							let embed = new globalThis.Supernova.discord.MessageEmbed();
 							embed.setColor("FF0066");
 							embed.setTitle("Error");
-							embed.setDescription("Error while trying to execute to execute \`" + toExec.getName() + "\` command.");
+							embed.setDescription(`Error while trying to execute to execute \`${toExec.getName()}\` command.`);
 							embed.setThumbnail(msg.guild.me.user.displayAvatarURL({dynamic: true}));
 							embed.setTimestamp();
 							
@@ -96,8 +96,8 @@ class MessageHandler{
 					let embed = new globalThis.Supernova.discord.MessageEmbed();
 					embed.setColor("FF0066");
 					embed.setTitle("Invalid Command");
-					embed.setURL(source + "src/content/list/Commands.js");
-					embed.setDescription("There is either no command such as \`" + cmd + "\` or you just don\'t have the permission to view said command, imbecile.");
+					embed.setURL(`${source}src/content/list/Commands.js`);
+					embed.setDescription(`There is either no command such as \`${cmd}\` or you just don't have the permission to view said command, imbecile.`);
 					embed.setThumbnail(msg.guild.me.user.displayAvatarURL({dynamic: true}));
 					embed.setTimestamp();
 					
@@ -133,10 +133,10 @@ class MessageHandler{
 						embed.setTitle("Message Deletion");
 						embed.setDescription("Successfully logged deleted message");
 						embed.setAuthor(msg.author.tag, msg.author.displayAvatarURL({dynamic: true}));
-						embed.addField("Message by " + msg.author.tag + " deleted in #" + msg.channel.name, msg.content);
+						embed.addField(`Message by ${msg.author.tag} deleted in #${msg.channel.name}`, msg.content);
 						embed.setThumbnail(msg.guild.me.user.displayAvatarURL({dynamic: true}));
 						embed.setTimestamp();
-						embed.setFooter("Message ID: " + msg.id, msg.author.displayAvatarURL({dynamic: true}));
+						embed.setFooter(`Message ID: ${msg.id}`, msg.author.displayAvatarURL({dynamic: true}));
 						
 						messagesChannel.send(embed);
 					};
