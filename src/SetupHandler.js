@@ -4,6 +4,10 @@ import fs from "fs";
 
 import {Guild} from "discord.js";
 
+/**
+ * The bot's server setup handler class
+ * @class
+ */
 class SetupHandler{
     /**
      * Internal setup object

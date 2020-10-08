@@ -7,7 +7,10 @@ import Content from "./Content.js";
 import Commands from "./list/Commands.js";
 import Noncommands from "./list/Noncommands.js";
 
-/** Class for listing content objects */
+/**
+ * Class for listing content objects
+ * @class
+*/
 class ContentList{
     /**
      * Array of content type based array of content objects
@@ -20,6 +23,7 @@ class ContentList{
      */
     #list;
 
+    /** Creates a new content lister object */
     constructor(){
         this.#content = [];
         this.#list = [];
@@ -61,10 +65,10 @@ class ContentList{
     };
 
     /**
-     * 
-     * @param {ContentType} type
-     * @param {String} name
-     * @returns {Content} 
+     * Gets a content by the given content type and name
+     * @param {ContentType} type The content type
+     * @param {String} name The content's name
+     * @returns {Content} The content
      */
     getByName(type, name){
         let res = null;
@@ -76,6 +80,12 @@ class ContentList{
         return res;
     };
 
+    /**
+     * Gets a content by the given content type and ID
+     * @param {ContentType} type The content type
+     * @param {Number} id The content's ID
+     * @returns {Content} The content
+     */
     getByID(type, id){
         let res = null;
 

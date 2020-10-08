@@ -8,14 +8,35 @@ import ContentType from "../ContentType.js";
 
 import Command from "../type/Command.js";
 
+/**
+ * The bot's command list class
+ * @class
+*/
 class Commands{
+    /**
+     * The bot's "help" command
+     * @type {Command}
+     */
     static help;
+    /**
+     * The bot's "setup" command
+     * @type {Command}
+     */
     static setup;
+    /**
+     * The bot's "say" command
+     * @type {Command}
+     */
     static say;
+    /**
+     * The bot's "func" command
+     * @type {Command}
+     */
     static func;
 
     constructor(){};
 
+    /** Initializes all commands */
     init(){
         this.help = new Command("help", async (msg, param, client) => {
             let commands = Vars.content.getBy(ContentType.command);

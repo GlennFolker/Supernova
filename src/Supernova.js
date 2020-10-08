@@ -9,7 +9,8 @@ import MessageHandler from "./MessageHandler.js";
 import Discord from "discord.js";
 
 /**
- * The main bot's class. Initializes everything on bot startup.
+ * The main bot's class. Initializes everything on bot startup
+ * @class
 */
 class Supernova{
     /**

@@ -10,7 +10,10 @@ import {GuildMember, Message} from "discord.js";
 import Command from "./content/type/Command.js";
 import Noncommand from "./content/type/Noncommand.js";
 
-/** The bot's message handler class */
+/**
+ * The bot's message handler class
+ * @class
+*/
 class MessageHandler{
     /**
      * The bot's command list

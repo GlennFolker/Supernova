@@ -4,6 +4,7 @@ import ContentList from "./content/ContentList.js";
 
 /**
  * A core class used as a reference to other class objects or other static variables
+ * @class
  */
 class Vars{
     /**

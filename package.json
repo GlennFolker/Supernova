@@ -1,23 +1,23 @@
 {
-	"type": "module",
-	"name": "supernova",
-	"version": "1.0.0",
-	"description": "\"I'm one of The Council. I shall do what I must against heretics.\"",
-	"main": "./src/Supernova.js",
-	"scripts": {
-		"start": "node ."
-	},
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/GlennFolker/Supernova.git"
-	},
-	"author": "GlennFolker",
-	"license": "MIT",
-	"bugs": {
-		"url": "https://github.com/GlennFolker/Supernova/issues"
-	},
-	"homepage": "https://github.com/GlennFolker/Supernova#readme",
-	"dependencies": {
-		"discord.js": "^12.3.1"
-	}
+    "type": "module",
+    "name": "supernova",
+    "version": "1.0.0",
+    "description": "\"I'm one of The Council. I shall do what I must against heretics.\"",
+    "main": "./src/Supernova.js",
+    "scripts": {
+        "start": "node ."
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/GlennFolker/Supernova.git"
+    },
+    "author": "GlennFolker",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/GlennFolker/Supernova/issues"
+    },
+    "homepage": "https://github.com/GlennFolker/Supernova#readme",
+    "dependencies": {
+        "discord.js": "^12.3.1"
+    }
 }

@@ -2,11 +2,20 @@
 
 import Noncommand from "../type/Noncommand.js";
 
+/**
+ * The bot's non-command list class
+ * @class
+*/
 class Noncommands{
+    /**
+     * Reacts with "🥖" whenever a message contains either "baguette", "baget", "bread", "france", or "french"
+     * @type {Noncommand}
+     */
     static baguette;
 
     constructor(){};
 
+    /** Initializes all non-commands */
     init(){
         this.baguette = new Noncommand("baguette", async (msg, param, client) => {
             await msg.react("🥖");
