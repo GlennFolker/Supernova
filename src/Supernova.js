@@ -20,7 +20,7 @@ class Supernova{
     static discord = Discord;
     /**
      * The bot's client
-     * @type {Client}
+     * @type {Discord.Client}
     */
     static client = new Discord.Client();
 
@@ -47,6 +47,8 @@ class Supernova{
                 this.msgHandler.init();
 
                 this.client.user.setActivity(`${Config.prefix}help`, {type: "LISTENING"});
+
+                console.log("Supernova has been launched!");
             });
 
             this.client.login(Config.token);

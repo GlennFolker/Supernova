@@ -50,20 +50,16 @@ class MessageHandler{
 
                         let shouldPush = true;
 
-                        console.log(letter);
-
                         switch(letter){
                             case enclosing[0]:
                                 level++;
                                 shouldPush = false;
-                                console.log(enclosing[0]);
 
                                 break;
 
                             case enclosing[1]:
-                                level++;
+                                level--;
                                 shouldPush = false;
-                                console.log(enclosing[1]);
 
                                 break;
                         };
@@ -75,13 +71,6 @@ class MessageHandler{
 
                     if(level > 0 && multiWord == false){
                         multiWord = true;
-
-                        return;
-                    }else if(level < 1 && multiWord == true){
-                        multiWord = false;
-                        i++;
-
-                        return;
                     };
 
                     arg = tmp.join("");
@@ -93,6 +82,12 @@ class MessageHandler{
                         processed[i] += arg;
                     }else{
                         processed[i] = arg;
+
+                        i++;
+                    };
+
+                    if(level < 1 && multiWord == true){
+                        multiWord = false;
 
                         i++;
                     };
@@ -174,6 +169,7 @@ class MessageHandler{
         Supernova.client.on("messageDelete", async msg => {
             try{
                 if(!msg.guild) return;
+                if(msg.content.startsWith(Config.prefix)) return;
 
                 let msgChannelID = Supernova.stpHandler.get(msg.guild, "msg-channel-id");
 
