@@ -14,7 +14,7 @@ import Discord from "discord.js";
 */
 class Supernova{
     /**
-     * Discord package required for the bot to run.
+     * Discord package required for the bot to run
      * @type {Object}
     */
     static discord = Discord;
