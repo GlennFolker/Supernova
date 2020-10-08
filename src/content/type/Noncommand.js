@@ -1,10 +1,15 @@
 "use strict";
 
-class Noncommand extends globalThis.Content{
+import Supernova from "../../Supernova.js";
+
+import Content from "../Content.js";
+import ContentType from "../ContentType.js";
+
+class Noncommand extends Content{
     #execute;
     #accepted;
 
-    constructor(name, execute = (msg, param, client) => {}, accepted = (msg, param) => true){
+    constructor(name, execute = async (msg, param, client) => {}, accepted = async (msg, param) => true){
         super(name);
 
         this.#execute = execute;
@@ -12,16 +17,16 @@ class Noncommand extends globalThis.Content{
     };
 
     getContentType(){
-        return globalThis.ContentType.noncommand;
+        return ContentType.noncommand;
     };
 
-    exec(msg, param){
-        this.#execute(msg, param, globalThis.Supernova.client);
+    async exec(msg, param){
+        await this.#execute(msg, param, Supernova.client);
     };
 
-    accepts(msg, param){
-        return this.#accepted(msg, param);
+    async accepts(msg, param){
+        return await this.#accepted(msg, param);
     };
 };
 
-globalThis.Noncommand = Noncommand;
+export default Noncommand;

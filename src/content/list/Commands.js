@@ -1,5 +1,13 @@
 "use strict";
 
+import Supernova from "../../Supernova.js";
+import Config from "../../Config.js";
+import Vars from "../../Vars.js";
+
+import ContentType from "../ContentType.js";
+
+import Command from "../type/Command.js";
+
 class Commands{
 	static help;
 	static setup;
@@ -9,8 +17,8 @@ class Commands{
 	constructor(){};
 	
 	init(){
-		this.help = new globalThis.Command("help", (msg, param, client) => {
-			let commands = globalThis.Vars.content.getBy(globalThis.ContentType.command);
+		this.help = new Command("help", async (msg, param, client) => {
+			let commands = Vars.content.getBy(ContentType.command);
 			
 			if(param.length < 1){
 				let result = ``;
@@ -23,7 +31,7 @@ class Commands{
 					
 					result += `_`;
 					
-					result += `${globalThis.Config.prefix}**${command.getName()}**`;
+					result += `${Config.prefix}**${command.getName()}**`;
 					
 					command.params.forEach(p => {
 						let optional = p.isOptional();
@@ -40,18 +48,16 @@ class Commands{
 					result += `\n`
 				});
 				
-				let source = "https://github.com/GlennFolker/Supernova/tree/master/";
-				
-				let embed = new globalThis.Supernova.discord.MessageEmbed();
+				let embed = new Supernova.discord.MessageEmbed();
 				embed.setColor("00BBFF");
 				embed.setTitle("Supernova Commands");
-				embed.setURL(`${source}src/content/list/Commands.js`);
+				embed.setURL(`${Vars.githubURL}src/content/list/Commands.js`);
 				embed.setDescription("Shows all available commands to execute");
 				embed.setThumbnail(msg.guild.me.user.displayAvatarURL({dynamic: true}));
 				embed.addField("Command List:", result, true);
 				embed.setTimestamp();
 				
-				msg.channel.send(embed);
+				await msg.channel.send(embed);
 			}else{
 				param = param.shift();
 				
@@ -63,7 +69,7 @@ class Commands{
 				});
 				
 				if(selectedCmd != null && (!selectedCmd.adminOnly || msg.member.hasPermission("ADMINISTRATOR"))){
-					result += `_${globalThis.Config.prefix}**${selectedCmd.getName()}**`;
+					result += `_${Config.prefix}**${selectedCmd.getName()}**`;
 					
 					selectedCmd.params.forEach(p => {
 						let optional = p.isOptional();
@@ -73,12 +79,10 @@ class Commands{
 					
 					result += `_`;
 					
-					let source = "https://github.com/GlennFolker/Supernova/tree/master/";
-					
-					let embed = new globalThis.Supernova.discord.MessageEmbed();
+					let embed = new Supernova.discord.MessageEmbed();
 					embed.setColor("00BBFF");
 					embed.setTitle(`"${selectedCmd.getName()}" Command`);
-					embed.setURL(`${source}src/content/list/Commands.js`);
+					embed.setURL(`${Vars.githubURL}src/content/list/Commands.js`);
 					if(selectedCmd.description != null){
 						embed.setDescription(selectedCmd.description);
 					};
@@ -86,65 +90,63 @@ class Commands{
 					embed.addField("Usage:", result, true);
 					embed.setTimestamp();
 					
-					msg.channel.send(embed);
+					await msg.channel.send(embed);
 				}else{
-					let source = "https://github.com/GlennFolker/Supernova/tree/master/";
-					
-					let embed = new globalThis.Supernova.discord.MessageEmbed();
+					let embed = new Supernova.discord.MessageEmbed();
 					embed.setColor("FF0066");
 					embed.setTitle("Invalid Command");
-					embed.setURL(`${source}src/content/list/Commands.js`);
+					embed.setURL(`${Vars.githubURL}src/content/list/Commands.js`);
 					embed.setDescription(`There is either no command such as \`${param}\` or you just don't have the permission to view said command, imbecile.`);
 					embed.setThumbnail(msg.guild.me.user.displayAvatarURL({dynamic: true}));
 					embed.setTimestamp();
 					
-					msg.channel.send(embed);
+					await msg.channel.send(embed);
 				};
 			};
 		});
 		this.help.description = "Shows this monologue or explains other commands if supplied another inputs.";
-		this.help.params[0] = new globalThis.Command.CommandParam("command", true);
+		this.help.params[0] = new Command.CommandParam("command", true);
 		
-		this.setup = new globalThis.Command("setup", (msg, param, client) => {
+		this.setup = new Command("setup", async (msg, param, client) => {
 			let key = param[0];
 			let val = param[1];
 			
 			if(typeof(val) !== "undefined"){
-				globalThis.Supernova.stpHandler.set(msg.guild, key, val);
+				Supernova.stpHandler.set(msg.guild, key, val);
 				
-				msg.reply(`\`${key}\` in this server is now \`${val}\`.`);
+				await msg.reply(`\`${key}\` in this server is now \`${val}\`.`);
 			}else{
-				val = globalThis.Supernova.stpHandler.get(msg.guild, key);
+				val = Supernova.stpHandler.get(msg.guild, key);
 				
-				msg.reply(`\`${key}\` in this server is currently \`${val}\`.`);
+				await msg.reply(`\`${key}\` in this server is currently \`${val}\`.`);
 			};
 		});
 		this.setup.adminOnly = true;
 		this.setup.description = "Configures things for this server.";
-		this.setup.params[0] = new globalThis.Command.CommandParam("type", false, [
+		this.setup.params[0] = new Command.CommandParam("type", false, [
 			"mod-channel-id",
 			"msg-channel-id"
 		]);
-		this.setup.params[1] = new globalThis.Command.CommandParam("value", true);
+		this.setup.params[1] = new Command.CommandParam("value", true);
 		
-		this.say = new globalThis.Command("say", (msg, param, client) => {
-			msg.delete();
-			msg.channel.send(param);
+		this.say = new Command("say", async (msg, param, client) => {
+			await msg.delete();
+			await msg.channel.send(param);
 		});
 		this.say.adminOnly = true;
 		this.say.description = "I will say the exact same thing.";
-		this.say.params[0] = new globalThis.Command.CommandParam("...phrase", false);
+		this.say.params[0] = new Command.CommandParam("...phrase", false);
 
-		this.func = new globalThis.Command("func", (msg, param, client) => {
+		this.func = new Command("func", async (msg, param, client) => {
 			let func = new Function("msg", "param", "supernova", param[0]);
 
-			func(msg, param, globalThis);
-			msg.reply("function execution is finished.");
+			await func(msg, param);
+			await msg.reply("function execution is finished.");
 		});
 		this.func.ownerOnly = true;
-		this.func.description = "Executes a function supplied with `msg`, `param`, and `supernova`.";
-		this.func.params[0] = new globalThis.Command.CommandParam("code", false);
+		this.func.description = "Executes a function supplied with `msg` and `param`.";
+		this.func.params[0] = new Command.CommandParam("code", false);
 	};
 };
 
-globalThis.Commands = Commands;
+export default Commands;

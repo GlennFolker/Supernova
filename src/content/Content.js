@@ -1,17 +1,17 @@
 "use strict";
 
+import Vars from "../Vars.js";
+
 class Content{
-	static #lastID = 0;
-	
 	#name;
 	#id;
 	
 	constructor(name){
 		if(this.constructor != Content){
 			this.#name = name;
-			this.#id = Content.#lastID++;
+			this.#id = Vars.content.getBy(this.getContentType()).length;
 			
-			globalThis.Vars.content.handleContent(this);
+			Vars.content.handleContent(this);
 		}else{
 			throw new Error("Cannot instantiate abstract class");
 		};
@@ -30,4 +30,4 @@ class Content{
 	};
 };
 
-globalThis.Content = Content;
+export default Content;

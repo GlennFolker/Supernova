@@ -1,34 +1,54 @@
 "use strict";
 
+import Config from "./Config.js";
+import Vars from "./Vars.js";
+
+import SetupHandler from "./SetupHandler.js";
+import MessageHandler from "./MessageHandler.js";
+
+import Discord from "discord.js";
+
+/**
+ * The main bot's class. Initializes everything on bot startup.
+*/
 class Supernova{
-	static discord = require("discord.js");
-	static client = new this.discord.Client();
+	/**
+	 * Discord package required for the bot to run.
+	 * @type {Object}
+	*/
+	static discord = Discord;
+	/**
+	 * The bot's client
+	 * @type {Client}
+	*/
+	static client = new Discord.Client();
 	
+	/**
+	 * The bot's message handler
+	 * @type {MessageHandler}
+	*/
 	static msgHandler;
+	/**
+	 * The bot's setup handler
+	 * @type {SetupHandler}
+	*/
 	static stpHandler;
 	
+	/** The main function that runs on bot startup */
 	static main(){
 		try{
-			require("./Config");
-			require("./Vars");
-
-			require("./SetupHandler");
-			require("./MessageHandler");
-
 			this.client.on("ready", () => {
-				globalThis.Vars.init();
-				this.stpHandler = new globalThis.SetupHandler();
-				this.msgHandler = new globalThis.MessageHandler();
+				Vars.init();
+				this.stpHandler = new SetupHandler();
+				this.msgHandler = new MessageHandler();
 
 				this.stpHandler.init();
 				this.msgHandler.init();
 
-				this.client.user.setActivity(globalThis.Config.prefix + "help", {type: "LISTENING"});
-
-				console.log(globalThis);
+				this.client.user.setActivity(Config.prefix + "help", {type: "LISTENING"});
 			});
 
-			this.client.login(globalThis.Config.token);
+			this.client.login(Config.token);
 		}catch(e){
 			console.error(e);
 
@@ -37,6 +57,6 @@ class Supernova{
 	};
 };
 
-globalThis.Supernova = Supernova;
+export default Supernova;
 
 Supernova.main();

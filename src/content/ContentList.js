@@ -1,16 +1,23 @@
 "use strict";
 
-require("./ContentType");
+import ContentType from "./ContentType.js";
 
-require("./Content");
-require("./type/Command");
-require("./type/Noncommand");
+import Content from "./Content.js";
 
-require("./list/Commands");
-require("./list/Noncommands");
+import Commands from "./list/Commands.js";
+import Noncommands from "./list/Noncommands.js";
 
+/** Class for listing content objects */
 class ContentList{
+	/**
+	 * Array of content type based array of content objects
+	 * @type {Content[][]}
+	*/
 	#content;
+	/**
+	 * Array of content type lists
+	 * @type {Content[]}
+	 */
 	#list;
 	
 	constructor(){
@@ -18,19 +25,24 @@ class ContentList{
 		this.#list = [];
 	};
 	
+	/** Initializes content type lists */
 	init(){
-		for(const type of globalThis.ContentType.all){
+		for(const type of ContentType.all){
 			this.#content[type] = [];
 		};
 		
 		this.#list.push(
-			new globalThis.Commands(),
-			new globalThis.Noncommands()
+			new Commands(),
+			new Noncommands()
 		);
 		
 		this.#list.forEach(list => list.init());
 	};
 	
+	/**
+	 * Puts a content object into the content list
+	 * @param {Content} content The content object that will be put into the list
+	 */
 	handleContent(content){
 		this.#content[content.getContentType()].forEach(c => {
 			if(c.getName() == content.getName()) throw new Error("Two of more contents cannot have the same name");
@@ -39,10 +51,21 @@ class ContentList{
 		this.#content[content.getContentType()].push(content);
 	};
 	
+	/**
+	 * Gets a content type list of the given content type
+	 * @param {ContentType} type
+	 * @returns {Content[]} The content type list
+	 */
 	getBy(type){
 		return this.#content[type];
 	};
 	
+	/**
+	 * 
+	 * @param {ContentType} type
+	 * @param {String} name
+	 * @returns {Content} 
+	 */
 	getByName(type, name){
 		let res = null;
 		
@@ -64,4 +87,4 @@ class ContentList{
 	};
 };
 
-globalThis.ContentList = ContentList;
+export default ContentList;

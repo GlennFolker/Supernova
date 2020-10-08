@@ -1,16 +1,25 @@
 "use strict";
 
-const fs = require("fs");
+import fs from "fs";
+
+import {Guild} from "discord.js";
 
 class SetupHandler{
+	/**
+	 * Internal setup object
+	 * @private
+	 * @type {object}
+	 */
 	#setup;
 	
+	/** Initializes setup handler for servers */
 	constructor(){
 		this.#setup = {
 			servers: []
 		};
 	};
 	
+	/** Initializes the internal setup object */
 	init(){
 		fs.readFile("setup.json", "utf8", (e, data) => {
 			if(e){
@@ -21,6 +30,12 @@ class SetupHandler{
 		});
 	};
 	
+	/**
+	 * Sets the given value of given key in the given server
+	 * @param {Guild} server The server
+	 * @param {String} key The setup's key
+	 * @param {String} val The setup's value
+	 */
 	set(server, key, val){
 		fs.readFile("setup.json", "utf8", (e, data) => {
 			if(e){
@@ -31,7 +46,7 @@ class SetupHandler{
 				let config = this.findConfig(this.findSetup(server, this.#setup), key);
 				config.val = val;
 				
-				fs.writeFile("setup.json", JSON.stringify(this.#setup), "utf8", ex => {
+				writeFile("setup.json", JSON.stringify(this.#setup), "utf8", ex => {
 					if(ex){
 						console.error(ex);
 					};
@@ -40,6 +55,12 @@ class SetupHandler{
 		});
 	};
 	
+	/**
+	 * Gets the given key in the given server
+	 * @param {Guild} server The server
+	 * @param {String} key The setup's key
+	 * @returns {String} The returned value
+	 */
 	get(server, key){
 		let config = this.findConfig(this.findSetup(server, this.#setup), key);
 		
@@ -52,6 +73,14 @@ class SetupHandler{
 		return config.val;
 	};
 	
+	/**
+	 * Finds the server's setup in the given data.
+	 * If not found, it will create a new setup, appends it to the given data, and returns it
+	 * @private
+	 * @param {Guild} server The server
+	 * @param {object} data The setup data
+	 * @returns {object} The server's setup
+	 */
 	findSetup(server, data){
 		let tgtServer = null;
 		
@@ -73,6 +102,13 @@ class SetupHandler{
 		};
 	};
 	
+	/**
+	 * Finds the setup's configuration in the given setup.
+	 * If not found, it will create a new configuration, appends it to the given setup, and returns is
+	 * @param {object} setup The setup data
+	 * @param {string} name The configuration's name
+	 * @returns {object} The setup's configuration
+	 */
 	findConfig(setup, name){
 		let tgtConfig = null;
 		
@@ -95,4 +131,4 @@ class SetupHandler{
 	};
 };
 
-globalThis.SetupHandler = SetupHandler;
+export default SetupHandler;

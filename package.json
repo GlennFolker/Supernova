@@ -1,4 +1,5 @@
 {
+	"type": "module",
 	"name": "supernova",
 	"version": "1.0.0",
 	"description": "\"I'm one of The Council. I shall do what I must against heretics.\"",

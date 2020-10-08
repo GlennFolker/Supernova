@@ -22,4 +22,4 @@ const ContentType = {
 	}
 };
 
-globalThis.ContentType = ContentType;
+export default ContentType;

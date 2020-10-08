@@ -1,6 +1,11 @@
 "use strict";
 
-class Command extends globalThis.Content{
+import Supernova from "../../Supernova.js";
+
+import Content from "../Content.js";
+import ContentType from "../ContentType.js";
+
+class Command extends Content{
 	#execute;
 	
 	params = [];
@@ -9,17 +14,17 @@ class Command extends globalThis.Content{
 	adminOnly = false;
 	ownerOnly = false;
 	
-	constructor(name, execute = (msg, param, client) => {}){
+	constructor(name, execute = async (msg, param, client) => {}){
 		super(name);
 		
 		this.#execute = execute;
 	};
 	
 	getContentType(){
-		return globalThis.ContentType.command;
+		return ContentType.command;
 	};
 	
-	exec(msg, param){
+	async exec(msg, param){
 		for(let i = 0; i < this.params.length; i++){
 			if(!this.params[i].isAccepted(param[i])){
 				let description = `\`${this.getName()}\` command's parameter index \`${i}\` doesn't accept \`${param[i]}\`.`;
@@ -40,7 +45,7 @@ class Command extends globalThis.Content{
 					};
 				};
 				
-				let embed = new globalThis.Supernova.discord.MessageEmbed();
+				let embed = new Supernova.discord.MessageEmbed();
 				embed.setColor("FF0066");
 				embed.setTitle("Invalid Parameters");
 				embed.setDescription(description);
@@ -48,13 +53,13 @@ class Command extends globalThis.Content{
 				embed.addField("Reserved Parameters:", result);
 				embed.setTimestamp();
 				
-				msg.channel.send(embed);
+				await msg.channel.send(embed);
 				
 				return;
 			};
 		};
 		
-		this.#execute(msg, param, globalThis.Supernova.client);
+		await this.#execute(msg, param, Supernova.client);
 	};
 	
 	static CommandParam = class CommandParam{
@@ -94,4 +99,4 @@ class Command extends globalThis.Content{
 	};
 };
 
-globalThis.Command = Command;
+export default Command;

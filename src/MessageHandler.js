@@ -1,42 +1,89 @@
 "use strict";
 
+import Config from "./Config.js";
+import Supernova from "./Supernova.js";
+import Vars from "./Vars.js";
+
+import ContentType from "./content/ContentType.js";
+import {Message, User} from "discord.js";
+
+import Command from "./content/type/Command.js";
+import Noncommand from "./content/type/Noncommand.js";
+
+/** The bot's message handler class */
 class MessageHandler{
+	/**
+	 * The bot's command list
+	 * @type {Command[]}
+	*/
 	commands;
+	/**
+	 * The bot's noncommand list
+	 * @type {Noncommand[]}
+	*/
 	noncommands;
 	
+	/** Creates a new instance of MessageHandler class and initializes the bot's client event handlers */
 	constructor(){
-		globalThis.Supernova.client.on("message", msg => {
+		Supernova.client.on("message", async msg => {
 			if(msg.author == msg.guild.me.user) return;
 
-			if(msg.content.startsWith(globalThis.Config.prefix)){
-				let args = msg.content.slice(globalThis.Config.prefix.length).trim().split(/ +/);
+			if(msg.content.startsWith(Config.prefix)){
+				let args = msg.content.slice(Config.prefix.length).trim().split(/ +/);
 				let cmd = args.shift().toLowerCase();
 				
 				let processed = [];
 				
-				let insideQuote = false;
+				let multiWord = false;
 				let level = 0;
 				let i = 0;
 				
 				args.forEach(arg => {
-					if(arg == "{"){
-						level++;
-					}else if(arg == "}"){
-						level--;
+					let tmp = [];
+
+					for(let i = 0; i < arg.length; i++){
+						let letter = arg.charAt(i);
+						let enclosing = Config.multiWord;
+						
+						let shouldPush = true;
+
+						console.log(letter);
+
+						switch(letter){
+							case enclosing[0]:
+								level++;
+								shouldPush = false;
+								console.log(enclosing[0]);
+
+								break;
+
+							case enclosing[1]:
+								level++;
+								shouldPush = false;
+								console.log(enclosing[1]);
+
+								break;
+						};
+
+						if(shouldPush){
+							tmp[tmp.length] = letter;
+						};
 					};
-					
-					if(level > 0 && insideQuote == false){
-						insideQuote = true;
+
+					if(level > 0 && multiWord == false){
+						multiWord = true;
 						
 						return;
-					}else if(level < 1 && insideQuote == true){
-						insideQuote = false;
+					}else if(level < 1 && multiWord == true){
+						multiWord = false;
 						i++;
 						
 						return;
 					};
 					
-					if(insideQuote){
+					arg = tmp.join("");
+
+					if(multiWord){
 						if(typeof(processed[i]) === "undefined") processed[i] = "";
 						
 						if(processed[i].length > 0) processed[i] += " ";
@@ -65,7 +112,7 @@ class MessageHandler{
 					){
 						let source = "https://github.com/GlennFolker/Supernova/tree/master/";
 						
-						let embed = new globalThis.Supernova.discord.MessageEmbed();
+						let embed = new Supernova.discord.MessageEmbed();
 						embed.setColor("FF0066");
 						embed.setTitle("Lack of Necessary Permissions");
 						embed.setURL(`${source}src/content/list/Commands.js`);
@@ -73,27 +120,27 @@ class MessageHandler{
 						embed.setThumbnail(msg.guild.me.user.displayAvatarURL({dynamic: true}));
 						embed.setTimestamp();
 						
-						msg.channel.send(embed);
+						await msg.channel.send(embed);
 					}else{
 						try{
-							toExec.exec(msg, args);
+							await toExec.exec(msg, args);
 						}catch(e){
 							console.error(e);
 							
-							let embed = new globalThis.Supernova.discord.MessageEmbed();
+							let embed = new Supernova.discord.MessageEmbed();
 							embed.setColor("FF0066");
 							embed.setTitle("Error");
-							embed.setDescription(`Error while trying to execute to execute \`${toExec.getName()}\` command.`);
+							embed.setDescription(`Error while trying to execute \`${toExec.getName()}\` command.`);
 							embed.setThumbnail(msg.guild.me.user.displayAvatarURL({dynamic: true}));
 							embed.setTimestamp();
 							
-							msg.channel.send(embed);
+							await msg.channel.send(embed);
 						};
 					};
 				}else{
 					let source = "https://github.com/GlennFolker/Supernova/tree/master/";
 					
-					let embed = new globalThis.Supernova.discord.MessageEmbed();
+					let embed = new Supernova.discord.MessageEmbed();
 					embed.setColor("FF0066");
 					embed.setTitle("Invalid Command");
 					embed.setURL(`${source}src/content/list/Commands.js`);
@@ -101,26 +148,31 @@ class MessageHandler{
 					embed.setThumbnail(msg.guild.me.user.displayAvatarURL({dynamic: true}));
 					embed.setTimestamp();
 					
-					msg.channel.send(embed);
+					await msg.channel.send(embed);
 				};
 			}else{
 				let args = msg.content.trim().split(/ +/);
 
 				let toExec = [];
 
-				this.noncommands.forEach(noncommand => {
-					if(noncommand.accepts(msg, args)) toExec.push(noncommand);
-				});
+				for(let i = 0; i < this.noncommands.length; i++){
+					let noncommand = this.noncommands[i];
+					let accept = await noncommand.accepts(msg, args);
 
-				toExec.forEach(noncommand => noncommand.exec(msg, args));
+					if(accept) toExec.push(noncommand);
+				};
+
+				for(let i = 0; i < toExec.length; i++){
+					await toExec[i].exec(msg, args);
+				};
 			};
 		});
 		
-		globalThis.Supernova.client.on("messageDelete", msg => {
+		Supernova.client.on("messageDelete", async msg => {
 			try{
 				if(!msg.guild) return;
 
-				let msgChannelID = globalThis.Supernova.stpHandler.get(msg.guild, "msg-channel-id");
+				let msgChannelID = Supernova.stpHandler.get(msg.guild, "msg-channel-id");
 
 				if(typeof(msgChannelID) !== "undefined"){
 					let messagesChannel = msg.guild.channels.cache.get(msgChannelID);
@@ -128,7 +180,7 @@ class MessageHandler{
 					if(typeof(messagesChannel) !== "undefined"){
 						if(msg.content.length < 1) return;
 
-						let embed = new globalThis.Supernova.discord.MessageEmbed();
+						let embed = new Supernova.discord.MessageEmbed();
 						embed.setColor("FF0066");
 						embed.setTitle("Message Deletion");
 						embed.setDescription("Successfully logged deleted message");
@@ -138,7 +190,7 @@ class MessageHandler{
 						embed.setTimestamp();
 						embed.setFooter(`Message ID: ${msg.id}`, msg.author.displayAvatarURL({dynamic: true}));
 						
-						messagesChannel.send(embed);
+						await messagesChannel.send(embed);
 					};
 				};
 			}catch(e){
@@ -147,32 +199,40 @@ class MessageHandler{
 		});
 	};
 
+	/** Initializes things for the message handler itself */
 	init(){
-		this.commands = globalThis.Vars.content.getBy(globalThis.ContentType.command);
-		this.noncommands = globalThis.Vars.content.getBy(globalThis.ContentType.noncommand);
+		this.commands = Vars.content.getBy(ContentType.command);
+		this.noncommands = Vars.content.getBy(ContentType.noncommand);
 	};
 	
-	async parseMention(msg, mention, client){
-		if(!mention) return;
-		
-		if(mention.startsWith("<@") && mention.endsWith(">")){
-			mention = mention.slice(2, -1);
+	/**
+	 * Gets a user from a mention
+	 * @param {Message} msg The Message
+	 * @param {String} mention Mention string
+	 * @returns {User} The mentioned User
+	 */
+	async parseMention(msg, mention){
+		try{
+			if(!mention) return;
 			
-			if(mention.startsWith("!")){
-				mention = mention.slice(1);
-			};
-			
-			let mentioned;
-			
-			await msg.guild.members.fetch(mention).then(m => {
-				mentioned = m;
-			}).catch(e => {
-				console.error(e);
-			});
-			
-			return mentioned;
-		}
-	};
+			if(mention.startsWith("<@") && mention.endsWith(">")){
+				mention = mention.slice(2, -1);
+				
+				if(mention.startsWith("!")){
+					mention = mention.slice(1);
+				};
+				
+				let mentioned;
+				
+				let fetched = await msg.guild.members.fetch(mention);
+				await fetched.then(m => mentioned = m);
+				
+				return mentioned;
+			}
+		}catch(e){
+			console.error(e);
+		};
+	}
 };
 
-globalThis.MessageHandler = MessageHandler;
+export default MessageHandler;

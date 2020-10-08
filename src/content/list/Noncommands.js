@@ -1,17 +1,17 @@
 "use strict";
 
+import Noncommand from "../type/Noncommand.js";
+
 class Noncommands{
     static baguette;
 
     constructor(){};
 
     init(){
-        this.baguette = new globalThis.Noncommand("baguette", (msg, param, client) => {
-            msg.react("🥖");
-        }, (msg, param) => {
+        this.baguette = new Noncommand("baguette", async (msg, param, client) => {
+            await msg.react("🥖");
+        }, async (msg, param) => {
             let res = false;
-
-            let tmp = (" " + msg.content).slice(1);
 
             let wordTable = [
                 "baguette",
@@ -22,7 +22,9 @@ class Noncommands{
             ];
 
             wordTable.forEach(word => {
-                if(tmp.includes(word)) res = true;
+                if(msg.content.toLowerCase().includes(word)){
+                    res = true;
+                };
             });
 
             return res;
@@ -30,4 +32,4 @@ class Noncommands{
     };
 };
 
-globalThis.Noncommands = Noncommands;
+export default Noncommands;
