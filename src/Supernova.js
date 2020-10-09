@@ -15,7 +15,7 @@ import Discord from "discord.js";
 class Supernova{
     /**
      * Discord package required for the bot to run
-     * @type {Object}
+     * @type {Discord}
     */
     static discord = Discord;
     /**
@@ -40,6 +40,7 @@ class Supernova{
         try{
             this.client.on("ready", () => {
                 Vars.init();
+
                 this.stpHandler = new SetupHandler();
                 this.msgHandler = new MessageHandler();
 

@@ -38,6 +38,8 @@ class Commands{
 
     /** Initializes all commands */
     init(){
+        // user commands
+
         this.help = new Command("help", async (msg, param, client) => {
             let commands = Vars.content.getBy(ContentType.command);
 
@@ -128,6 +130,10 @@ class Commands{
         this.help.description = "Shows this monologue or explains other commands if supplied another inputs.";
         this.help.params[0] = new Command.CommandParam("command", true);
 
+        // end region
+
+        // admin commands
+
         this.setup = new Command("setup", async (msg, param, client) => {
             let key = param[0];
             let val = param[1];
@@ -158,6 +164,10 @@ class Commands{
         this.say.description = "I will say the exact same thing.";
         this.say.params[0] = new Command.CommandParam("...phrase", false);
 
+        // end region
+
+        // owner commands
+
         this.func = new Command("func", async (msg, param, client) => {
             let func = new Function("msg", "param", "supernova", param[0]);
 
@@ -167,6 +177,8 @@ class Commands{
         this.func.ownerOnly = true;
         this.func.description = "Executes a function supplied with `msg` and `param`.";
         this.func.params[0] = new Command.CommandParam("code", false);
+
+        // end region
     };
 };
 

@@ -51,15 +51,19 @@ class MessageHandler{
                         let shouldPush = true;
 
                         switch(letter){
-                            case enclosing[0]:
+                            case enclosing[0][0]:
+                                if(level < 1){
+                                    shouldPush = false;
+                                };
                                 level++;
-                                shouldPush = false;
 
                                 break;
 
-                            case enclosing[1]:
+                            case enclosing[1][0]:
                                 level--;
-                                shouldPush = false;
+                                if(level < 1){
+                                    shouldPush = false;
+                                };
 
                                 break;
                         };
@@ -108,12 +112,10 @@ class MessageHandler{
                         toExec.adminOnly && !msg.member.hasPermission("ADMINISTRATOR") ||
                         toExec.ownerOnly && msg.author.id !== msg.guild.owner.id
                     ){
-                        let source = "https://github.com/GlennFolker/Supernova/tree/master/";
-
                         let embed = new Supernova.discord.MessageEmbed();
                         embed.setColor("FF0066");
                         embed.setTitle("Lack of Necessary Permissions");
-                        embed.setURL(`${source}src/content/list/Commands.js`);
+                        embed.setURL(`${Vars.githubURL}src/content/list/Commands.js`);
                         embed.setDescription(`Who are you again, peasant? Wanting me to execute \`${toExec.getName()}\` command?`);
                         embed.setThumbnail(msg.guild.me.user.displayAvatarURL({dynamic: true}));
                         embed.setTimestamp();
@@ -136,12 +138,10 @@ class MessageHandler{
                         };
                     };
                 }else{
-                    let source = "https://github.com/GlennFolker/Supernova/tree/master/";
-
                     let embed = new Supernova.discord.MessageEmbed();
                     embed.setColor("FF0066");
                     embed.setTitle("Invalid Command");
-                    embed.setURL(`${source}src/content/list/Commands.js`);
+                    embed.setURL(`${Vars.githubURL}src/content/list/Commands.js`);
                     embed.setDescription(`There is either no command such as \`${cmd}\` or you just don't have the permission to view said command, imbecile.`);
                     embed.setThumbnail(msg.guild.me.user.displayAvatarURL({dynamic: true}));
                     embed.setTimestamp();
