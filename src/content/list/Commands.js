@@ -1,5 +1,8 @@
 "use strict";
 
+import fetch from "node-fetch";
+import got from "got";
+
 import Supernova from "../../Supernova.js";
 import Config from "../../Config.js";
 import Vars from "../../Vars.js";
@@ -13,11 +16,20 @@ import Command from "../type/Command.js";
  * @class
 */
 class Commands{
+    // user commands
     /**
      * The bot's "help" command
      * @type {Command}
      */
     static help;
+    /**
+     * The bot's "modinfo" command
+     * @type {Command}
+     */
+    static modinfo;
+    // end region
+
+    // admin commands
     /**
      * The bot's "setup" command
      * @type {Command}
@@ -28,11 +40,15 @@ class Commands{
      * @type {Command}
      */
     static say;
+    // end region
+
+    // owner commands
     /**
      * The bot's "func" command
      * @type {Command}
      */
     static func;
+    // end region
 
     constructor(){};
 
@@ -130,6 +146,88 @@ class Commands{
         this.help.description = "Shows this monologue or explains other commands if supplied another inputs.";
         this.help.params[0] = new Command.CommandParam("command", true);
 
+        this.modinfo = new Command("modinfo", async (msg, param, client) => {
+            msg.channel.send("Fetching mod data...");
+
+            let mod = await fetch(`${Vars.mwGithubURLRaw}mod.json`).then(response => {
+                return response.json();
+            }).catch(e => {
+                msg.reply("there was an error while trying to fetch mod data.");
+
+                console.error(e);
+            });
+
+            if(!mod) return;
+
+            let ghData = await got("https://api.github.com/repos/JerichoFletcher/mechanical-warfare").then(request => {
+                return JSON.parse(request.body);
+            }).catch(e => {
+                console.error(e);
+            });
+
+            Object.keys(mod).forEach(key => {
+                let value = mod[key];
+
+                if(typeof(value) === "string"){
+                    let result = [];
+                    let i = 0;
+
+                    let level = 0;
+                    let shouldPush = true;
+
+                    for(let j = 0; j < value.length; j++){
+                        let letter = value.charAt(j);
+
+                        switch(letter){
+                            case "[":
+                                level++;
+
+                                break;
+                            case "]":
+                                level--;
+
+                                break;
+                        };
+
+                        if(level > 0){
+                            shouldPush = false;
+                        };
+
+                        if(shouldPush){
+                            result[i] = letter;
+
+                            i++;
+                        };
+
+                        if(level < 1){
+                            shouldPush = true;
+                        };
+                    };
+
+                    mod[key] = result.join("");
+                };
+            });
+
+            let embed = new Supernova.discord.MessageEmbed();
+            embed.setColor("FFCC00");
+            embed.setTitle(mod.displayName);
+            embed.setURL(Vars.mwGithubURL);
+            embed.setDescription(mod.description);
+            embed.setAuthor(ghData.owner.login, ghData.owner.avatar_url);
+            embed.setThumbnail(`${Vars.mwGithubURLRaw}icon.png`);
+            embed.addFields(
+                {name: "Version:", value: mod.version},
+                {name: "Minimum game version:", value: mod.minGameVersion},
+
+                {name: "Created at:", value: new Date(ghData.created_at).toUTCString(), inline: true},
+                {name: "Last updated:", value: new Date(ghData.pushed_at).toUTCString(), inline: true}
+            );
+            embed.setFooter(`${ghData.stargazers_count}☆ | ${ghData.forks_count}⑂ | ${ghData.subscribers_count}👁`, `${Vars.mwGithubURLRaw}icon.png`);
+
+            await msg.channel.send(embed);
+        });
+        this.modinfo.description = "Informations about the Mechanical Warfare mod.";
+
         // end region
 
         // admin commands
@@ -177,6 +275,14 @@ class Commands{
         this.func.ownerOnly = true;
         this.func.description = "Executes a function supplied with `msg` and `param`.";
         this.func.params[0] = new Command.CommandParam("code", false);
+
+        this.shutdown = new Command("shutdown", async (msg, param, client) => {
+            await msg.channel.send("Exited.");
+
+            client.emit("exit", 1);
+        });
+        this.shutdown.adminOnly = true;
+        this.shutdown.description = "Shuts down the bot. Just in case.";
 
         // end region
     };

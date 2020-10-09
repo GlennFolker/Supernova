@@ -49,14 +49,20 @@ class Supernova{
 
                 this.client.user.setActivity(`${Config.prefix}help`, {type: "LISTENING"});
 
-                console.log("Supernova has been launched!");
+                console.log("Supernova has been launched.");
+            });
+
+            this.client.on("exit", code => {
+                console.log(`Supernova has been exited with code ${code}.`);
+
+                process.exit(code);
             });
 
             this.client.login(Config.token);
         }catch(e){
             console.error(e);
 
-            process.exit();
+            this.client.emit("exit", 0);
         };
     };
 };
