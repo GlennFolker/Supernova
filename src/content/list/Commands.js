@@ -209,7 +209,7 @@ class Commands{
             });
 
             let embed = new Supernova.discord.MessageEmbed();
-            embed.setColor("FFCC00");
+            embed.setColor("FFBB00");
             embed.setTitle(mod.displayName);
             embed.setURL(Vars.mwGithubURL);
             embed.setDescription(mod.description);
