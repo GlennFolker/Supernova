@@ -27,6 +27,11 @@ class Commands{
      * @type {Command}
      */
     static mods;
+    /**
+     * The bot's "mod" command
+     * @type {Command}
+     */
+    static mod;
     // end region
 
     // admin commands
@@ -147,6 +152,8 @@ class Commands{
         this.help.params[0] = new Command.CommandParam("command", true);
 
         this.mods = new Command("mods", async (msg, param, client) => {
+            msg.channel.send("Preparing...");
+
             if(typeof(param[0]) !== "undefined"){
                 Supernova.modList.sort(param[0]);
             }else{
@@ -173,18 +180,15 @@ class Commands{
                     let json = await response.json();
 
                     return json;
-                }).catch(e => {
-                    hjson = true;
-                });
+                }).catch(e => hjson = true);
 
                 if(hjson){
-                    raw = await fetch(`${src}/mod.hjson`).then(async response => {
+                    raw = await fetch(`${src}/master/mod.hjson`).then(async response => {
                         let string = await response.text();
 
                         return HJSON.parse(string);
                     }).catch(e => {
                         console.log(`${mod.full_name} couldn't be put into the embed message.`);
-                        console.error(e);
                     });
                 };
 
@@ -192,11 +196,7 @@ class Commands{
 
                 raw = Supernova.modList.parseString(raw);
 
-                let res = `${mod.stargazers_count}☆ | ${mod.forks_count}⑂ ${typeof(mod.subscribers_count) !== "undefined" ? `| ${mod.subscribers_count}👁` : ""}\n\n`;
-
-                if(typeof(raw.description !== "undefined")){
-                    res += `${raw.description}\n`;
-                };
+                let res = `${mod.stargazers_count}☆ | ${mod.forks_count}⑂ ${typeof(mod.subscribers_count) !== "undefined" ? `| ${mod.subscribers_count}👁` : ""}\n`;
 
                 if(typeof(raw.version) !== "undefined"){
                     res += `**Version**: _${raw.version}_\n`;
@@ -206,8 +206,12 @@ class Commands{
                     res += `**Minimum game version**: _${raw.minGameVersion}_\n`;
                 };
 
-                res += `**Created at**: ${new Date(mod.created_at).toUTCString()}\n`;
-                res += `**Last updated**: ${new Date(mod.pushed_at).toUTCString()}\n\n`;
+                if(typeof(raw.description !== "undefined")){
+                    res += `**Description**:\n${raw.description}\n`;
+                };
+
+                res += `**Created at**: _${new Date(mod.created_at).toUTCString()}_\n`;
+                res += `**Last updated**: _${new Date(mod.pushed_at).toUTCString()}_\n\n`;
 
                 embed.addField(mod.full_name, res);
             };
@@ -223,6 +227,87 @@ class Commands{
             "stargazers_count",
             "forks_count"
         ]);
+
+        this.mod = new Command("mod", async (msg, param, client) => {
+            msg.channel.send("Fetching...");
+
+            let mod = Supernova.modList.get(param[0]);
+
+            if(typeof(mod) === "undefined"){
+                msg.reply(`Cannot find mod ${param}.`);
+
+                return;
+            };
+
+            let src = mod.html_url.replace("github.com", "raw.githubusercontent.com");
+            let raw;
+
+            let errored = false;
+            let hasIcon = true;
+
+            let hjson = false;
+            raw = await fetch(`${src}/master/mod.json`).then(async response => {
+                let json = await response.json();
+
+                return json;
+            }).catch(e => hjson = true);
+
+            if(hjson){
+                raw = await fetch(`${src}/master/mod.hjson`).then(async response => {
+                    let string = await response.text();
+
+                    return HJSON.parse(string);
+                }).catch(e => errored = true);
+            };
+
+            await fetch(`${src}/master/icon.png`).then(async response => {
+                return await response.buffer();
+            }).catch(e => hasIcon = false);
+
+            if(errored){
+                msg.reply(`Couldn't read \`${mod.full_name}\`'s \`mod.[h]json\`.`);
+
+                return;
+            }else{
+                raw = Supernova.modList.parseString(raw);
+
+                let embed = new Supernova.discord.MessageEmbed();
+                embed.setColor("FFCC00");
+                embed.setAuthor(mod.owner.login, mod.owner.avatar_url);
+                embed.setTitle(mod.full_name);
+                embed.setURL(mod.html_url);
+
+                if(hasIcon){
+                    embed.setThumbnail(`${src}/master/icon.png`);
+                };
+
+                if(typeof(raw.description) !== "undefined"){
+                    embed.setDescription(raw.description);
+                };
+
+                if(typeof(raw.version) !== "undefined"){
+                    embed.addField("Version:", raw.version);
+                };
+
+                if(typeof(raw.minGameVersion) !== "undefined"){
+                    embed.addField("Minimum game version:", raw.minGameVersion);
+                };
+
+                embed.addFields(
+                    {name: "Created at:", value: new Date(mod.created_at).toUTCString(), inline: true},
+                    {name: "Last updated:", value: new Date(mod.pushed_at).toUTCString(), inline: true}
+                );
+
+                embed.setFooter(
+                    `${mod.stargazers_count}☆ | ${mod.forks_count}⑂ ${typeof(mod.subscribers_count) !== "undefined" ? `| ${mod.subscribers_count}👁` : ""}`,
+                    hasIcon ? `${src}/master/icon.png` : mod.owner.avatar_url
+                );
+
+                await msg.channel.send(embed);
+            };
+        });
+        this.mod.description = "Displays a specific mod from the listed ones. Format is _<author>/<repository>_.";
+        this.mod.params[0] = new Command.CommandParam("fullname", false);
 
         // end region
 

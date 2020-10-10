@@ -31,8 +31,30 @@ class ModList{
             console.error(e);
         });
 
-        list.items.forEach(mod => {
-            if(mod.full_name !== "Anuken/ExampleMod"){
+        list.items.forEach(async mod => {
+            if(mod.full_name === "Anuken/ExampleMod") return;
+
+            let src = mod.html_url.replace("github.com", "raw.githubusercontent.com");
+            let raw;
+
+            let errored = false;
+
+            let hjson = false;
+            raw = await fetch(`${src}/master/mod.json`).then(async response => {
+                let json = await response.json();
+
+                return json;
+            }).catch(e => hjson = true);
+
+            if(hjson){
+                raw = await fetch(`${src}/master/mod.hjson`).then(async response => {
+                    let text = await response.text();
+
+                    return HJSON.parse(text);
+                }).catch(e => errored = true);
+            };
+
+            if(!errored && typeof(raw.name) !== "undefined"){
                 this.#list.push(mod);
             };
         });
@@ -49,7 +71,7 @@ class ModList{
         let res;
 
         this.#list.forEach(mod => {
-            if(mod.full_name === fullname) res = mod;
+            if(mod.full_name.toLowerCase() === fullname.toLowerCase()) res = mod;
         });
 
         return res;
