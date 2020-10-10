@@ -6,7 +6,6 @@ import HJSON from "hjson";
 import Supernova from "../../Supernova.js";
 import Config from "../../Config.js";
 import Vars from "../../Vars.js";
-import ModList from "../../ModList.js";
 
 import ContentType from "../ContentType.js";
 
@@ -24,7 +23,7 @@ class Commands{
      */
     static help;
     /**
-     * The bot's "modinfo" command
+     * The bot's "mods" command
      * @type {Command}
      */
     static mods;
