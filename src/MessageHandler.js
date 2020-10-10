@@ -47,12 +47,12 @@ class MessageHandler{
 
                     for(let i = 0; i < arg.length; i++){
                         let letter = arg.charAt(i);
-                        let enclosing = Config.multiWord;
+                        let encasing = Config.multiWord;
 
                         let shouldPush = true;
 
                         switch(letter){
-                            case enclosing[0][0]:
+                            case encasing[0][0]:
                                 if(level < 1){
                                     shouldPush = false;
                                 };
@@ -60,7 +60,7 @@ class MessageHandler{
 
                                 break;
 
-                            case enclosing[1][0]:
+                            case encasing[1][0]:
                                 level--;
                                 if(level < 1){
                                     shouldPush = false;
