@@ -32,6 +32,11 @@ class Commands{
      * @type {Command}
      */
     static mod;
+    /**
+     * The bot's "mw" command
+     * @type {Command}
+     */
+    static mw;
     // end region
 
     // admin commands
@@ -302,12 +307,18 @@ class Commands{
                     `${mod.stargazers_count}☆ | ${mod.forks_count}⑂ ${typeof(mod.subscribers_count) !== "undefined" ? `| ${mod.subscribers_count}👁` : ""}`,
                     hasIcon ? `${src}/master/icon.png` : mod.owner.avatar_url
                 );
+                embed.setTimestamp();
 
                 await msg.channel.send(embed);
             };
         });
         this.mod.description = "Displays a specific mod from the listed ones. Format is _<author>/<repository>_.";
         this.mod.params[0] = new Command.CommandParam("fullname", false);
+
+        this.mw = new Command("mw", async (msg, param, client) => {
+            await this.mod.exec(msg, ["JerichoFletcher/mechanical-warfare"]);
+        });
+        this.mw.description = "Equivalent to `sn!mod JerichoFletcher/mechanical-warfare`.";
 
         // end region
 
