@@ -29,6 +29,7 @@ class MessageHandler{
     /** Creates a new instance of MessageHandler class and initializes the bot's client event handlers */
     constructor(){
         Supernova.client.on("message", async msg => {
+            if(!msg.guild) return;
             if(msg.author == msg.guild.me.user) return;
 
             if(msg.content.startsWith(Config.prefix)){

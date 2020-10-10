@@ -5,6 +5,7 @@ import Vars from "./Vars.js";
 
 import SetupHandler from "./SetupHandler.js";
 import MessageHandler from "./MessageHandler.js";
+import ModList from "./ModList.js";
 
 import Discord from "discord.js";
 
@@ -34,18 +35,25 @@ class Supernova{
      * @type {SetupHandler}
     */
     static stpHandler;
+    /**
+     * List of mindustry mods
+     * @type {ModList}
+     */
+    static modList;
 
     /** The main function that runs on bot startup */
     static main(){
         try{
-            this.client.on("ready", () => {
+            this.client.on("ready", async () => {
                 Vars.init();
 
                 this.stpHandler = new SetupHandler();
                 this.msgHandler = new MessageHandler();
+                this.modList = new ModList();
 
                 this.stpHandler.init();
                 this.msgHandler.init();
+                await this.modList.update();
 
                 this.client.user.setActivity(`${Config.prefix}help`, {type: "LISTENING"});
 

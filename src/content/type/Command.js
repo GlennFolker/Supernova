@@ -156,7 +156,7 @@ class Command extends Content{
          * @param {String} param The keyword
          */
         isAccepted(param){
-            if(this.#accepted.length < 1 || this.#optional) return true;
+            if(this.#accepted.length < 1 || (this.#optional && typeof(param) === "undefined")) return true;
 
             let res = false;
 

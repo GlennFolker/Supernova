@@ -1,11 +1,12 @@
 "use strict";
 
 import fetch from "node-fetch";
-import got from "got";
+import HJSON from "hjson";
 
 import Supernova from "../../Supernova.js";
 import Config from "../../Config.js";
 import Vars from "../../Vars.js";
+import ModList from "../../ModList.js";
 
 import ContentType from "../ContentType.js";
 
@@ -26,7 +27,7 @@ class Commands{
      * The bot's "modinfo" command
      * @type {Command}
      */
-    static modinfo;
+    static mods;
     // end region
 
     // admin commands
@@ -146,87 +147,83 @@ class Commands{
         this.help.description = "Shows this monologue or explains other commands if supplied another inputs.";
         this.help.params[0] = new Command.CommandParam("command", true);
 
-        this.modinfo = new Command("modinfo", async (msg, param, client) => {
-            msg.channel.send("Fetching mod data...");
+        this.mods = new Command("mods", async (msg, param, client) => {
+            if(typeof(param[0]) !== "undefined"){
+                Supernova.modList.sort(param[0]);
+            }else{
+                Supernova.modList.sort();
+            };
 
-            let mod = await fetch(`${Vars.mwGithubURLRaw}mod.json`).then(response => {
-                return response.json();
-            }).catch(e => {
-                msg.reply("there was an error while trying to fetch mod data.");
-
-                console.error(e);
-            });
-
-            if(!mod) return;
-
-            let ghData = await got("https://api.github.com/repos/JerichoFletcher/mechanical-warfare").then(request => {
-                return JSON.parse(request.body);
-            }).catch(e => {
-                console.error(e);
-            });
-
-            Object.keys(mod).forEach(key => {
-                let value = mod[key];
-
-                if(typeof(value) === "string"){
-                    let result = [];
-                    let i = 0;
-
-                    let level = 0;
-                    let shouldPush = true;
-
-                    for(let j = 0; j < value.length; j++){
-                        let letter = value.charAt(j);
-
-                        switch(letter){
-                            case "[":
-                                level++;
-
-                                break;
-                            case "]":
-                                level--;
-
-                                break;
-                        };
-
-                        if(level > 0){
-                            shouldPush = false;
-                        };
-
-                        if(shouldPush){
-                            result[i] = letter;
-
-                            i++;
-                        };
-
-                        if(level < 1){
-                            shouldPush = true;
-                        };
-                    };
-
-                    mod[key] = result.join("");
-                };
-            });
+            let mods = Supernova.modList.getAll();
+            mods = mods.slice(Math.max(mods.length - 20, 0));
 
             let embed = new Supernova.discord.MessageEmbed();
-            embed.setColor("FFBB00");
-            embed.setTitle(mod.displayName);
-            embed.setURL(Vars.mwGithubURL);
-            embed.setDescription(mod.description);
-            embed.setAuthor(ghData.owner.login, ghData.owner.avatar_url);
-            embed.setThumbnail(`${Vars.mwGithubURLRaw}icon.png`);
-            embed.addFields(
-                {name: "Version:", value: mod.version},
-                {name: "Minimum game version:", value: mod.minGameVersion},
+            embed.setColor("00BBFF");
+            embed.setTitle("Mindustry Mods");
+            embed.setURL("https://github.com/topics/mindustry-mod/");
+            embed.setDescription("Currently listed sorted mods");
+            embed.setTimestamp();
 
-                {name: "Created at:", value: new Date(ghData.created_at).toUTCString(), inline: true},
-                {name: "Last updated:", value: new Date(ghData.pushed_at).toUTCString(), inline: true}
-            );
-            embed.setFooter(`${ghData.stargazers_count}☆ | ${ghData.forks_count}⑂ | ${ghData.subscribers_count}👁`, `${Vars.mwGithubURLRaw}icon.png`);
+            for(let i = 0; i < 20; i++){
+                let mod = mods[i];
+                let src = mod.html_url.replace("github.com", "raw.githubusercontent.com");
+                let raw;
 
-            await msg.channel.send(embed);
+                let hjson = false;
+                raw = await fetch(`${src}/master/mod.json`).then(async response => {
+                    let json = await response.json();
+
+                    return json;
+                }).catch(e => {
+                    hjson = true;
+                });
+
+                if(hjson){
+                    raw = await fetch(`${src}/mod.hjson`).then(async response => {
+                        let string = await response.text();
+
+                        return HJSON.parse(string);
+                    }).catch(e => {
+                        console.log(`${mod.full_name} couldn't be put into the embed message.`);
+                        console.error(e);
+                    });
+                };
+
+                if(typeof(raw.name) === "undefined") continue;
+
+                raw = Supernova.modList.parseString(raw);
+
+                let res = `${mod.stargazers_count}☆ | ${mod.forks_count}⑂ ${typeof(mod.subscribers_count) !== "undefined" ? `| ${mod.subscribers_count}👁` : ""}\n\n`;
+
+                if(typeof(raw.description !== "undefined")){
+                    res += `${raw.description}\n`;
+                };
+
+                if(typeof(raw.version) !== "undefined"){
+                    res += `**Version**: _${raw.version}_\n`;
+                };
+
+                if(typeof(raw.minGameVersion) !== "undefined"){
+                    res += `**Minimum game version**: _${raw.minGameVersion}_\n`;
+                };
+
+                res += `**Created at**: ${new Date(mod.created_at).toUTCString()}\n`;
+                res += `**Last updated**: ${new Date(mod.pushed_at).toUTCString()}\n\n`;
+
+                embed.addField(mod.full_name, res);
+            };
+
+            await msg.author.send(embed);
+            await msg.react("👍");
         });
-        this.modinfo.description = "Informations about the Mechanical Warfare mod.";
+        this.mods.description = "DM's you 20 mindustry mods sorted by given option.";
+        this.mods.params[0] = new Command.CommandParam("option", true, [
+            "created_at",
+            "pushed_at",
+
+            "stargazers_count",
+            "forks_count"
+        ]);
 
         // end region
 
