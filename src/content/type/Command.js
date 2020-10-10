@@ -78,7 +78,7 @@ class Command extends Content{
                         result += `\`${j}\`: `;
 
                         for(let k = 0; k < accepted.length; k++){
-                            result += `\`${accepted[k]}\`${k < accepted.length - 1 ? "," : "."}`;
+                            result += `\`${accepted[k]}\`${k < accepted.length - 1 ? ", " : "."}`;
                         };
 
                         result += `\n`;
