@@ -1,1 +1,19 @@
 sourceSets.main.java.srcDirs = [ "src/", "$buildDir/generated/sources/annotationProcessor/java/main" ]
+
+sourceCompatibility = 1.8
+
+ext{
+    mainClassName = "supernova.Supernova"
+}
+
+jar{
+    from files(sourceSets.main.output.classesDirs)
+    from files(sourceSets.main.output.resourcesDir)
+    from {configurations.runtimeClasspath.collect{ it.isDirectory() || !it.name.endsWithAny(".zip", ".jar") ? it : zipTree(it) }}
+
+    archiveFileName = "${appName}.jar"
+
+    manifest{
+        attributes "Main-Class": mainClassName
+    }
+}

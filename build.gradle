@@ -3,6 +3,7 @@ buildscript{
         props = new Properties().with{ p -> p.load(file('gradle.properties').newReader()); return p }
 
         arcHash = props["archash"]
+        mindustryHash = props["mindustryhash"]
         novaHash = props["novahash"]
         mwHash = props["mwhash"]
     }
@@ -17,13 +18,16 @@ buildscript{
 
     dependencies{
         classpath "com.github.Anuken.Arc:arc-core:$archash"
+        classpath "com.github.Anuken.Mindustry:core:$mindustryHash"
         classpath "com.github.GlennFolker.Nova:nova-main:$novaHash"
-        classpath "com.github.JerichoFletcher.mechanical-warfare:mw:$mwHash"
+        //classpath "com.github.JerichoFletcher.mechanical-warfare:mw:$mwHash"
+        classpath "net.dv8tion:JDA:4.0.0_54"
     }
 }
 
 allprojects{
     apply plugin: "java"
+    apply plugin: "maven-publish"
 
     group = "com.github.GlennFolker"
     version = "1.0"
@@ -31,6 +35,7 @@ allprojects{
     ext{
         arcHash = props["archash"]
         sourceCompatibility = 1.8
+        appName = "Supernova"
     }
 
     repositories{
@@ -52,6 +57,8 @@ project(":main"){
 
     dependencies{
         implementation "com.github.Anuken.Arc:arc-core:$archash"
-        implementation "com.github.JerichoFletcher.mechanical-warfare:mw:$mwHash"
+        implementation "com.github.Anuken.Mindustry:core:$mindustryHash"
+        //implementation "com.github.JerichoFletcher.mechanical-warfare:mw:$mwHash"
+        implementation "net.dv8tion:JDA:4.0.0_54"
     }
 }
