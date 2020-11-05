@@ -1,7 +1,18 @@
-node_modules
+# Java
+.classpath
+.project
 
-src/Config.js
+# Gradle
+.gradle/
 
-setup.json
-warns.json
-workspace.code-workspace
+# Eclipse
+.settings/
+
+# Maven
+pom.xml
+
+# VSCode
+.vscode/
+
+# IntelliJ IDEA
+.idea/

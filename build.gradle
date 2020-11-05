@@ -1,0 +1,57 @@
+buildscript{
+    ext{
+        props = new Properties().with{ p -> p.load(file('gradle.properties').newReader()); return p }
+
+        arcHash = props["archash"]
+        novaHash = props["novahash"]
+        mwHash = props["mwhash"]
+    }
+
+    repositories{
+        mavenCentral()
+        jcenter()
+        maven{ url "https://oss.sonatype.org/content/repositories/snapshots/" }
+        google()
+        maven{ url 'https://jitpack.io' }
+    }
+
+    dependencies{
+        classpath "com.github.Anuken.Arc:arc-core:$archash"
+        classpath "com.github.GlennFolker.Nova:nova-main:$novaHash"
+        classpath "com.github.JerichoFletcher.mechanical-warfare:mw:$mwHash"
+    }
+}
+
+allprojects{
+    apply plugin: "java"
+
+    group = "com.github.GlennFolker"
+    version = "1.0"
+
+    ext{
+        arcHash = props["archash"]
+        sourceCompatibility = 1.8
+    }
+
+    repositories{
+        mavenCentral()
+        jcenter()
+        maven{ url "https://oss.sonatype.org/content/repositories/snapshots/" }
+        google()
+        maven{ url 'https://jitpack.io' }
+    }
+
+    compileJava{
+        options.fork = true
+        options.incremental = true
+    }
+}
+
+project(":main"){
+    apply plugin: "java-library"
+
+    dependencies{
+        implementation "com.github.Anuken.Arc:arc-core:$archash"
+        implementation "com.github.JerichoFletcher.mechanical-warfare:mw:$mwHash"
+    }
+}
